@@ -1,0 +1,54 @@
+{"meta": {"site": "DevCenter","version": "1.0.0","description":"DEV","updated": "2025","projects_count": 3  },
+  "projects": [
+  {
+  "id": "Dev-code-web1",
+  "title": "Dev Code Web1",
+  "url": "https://dev-code-web.netlify.app",
+  "tags": ["web", "crear", "code", "dev", "programación", "developer", "devcenter", "oficial", "creator", "projects"],
+  "initials": "DW",
+  "description": "Plataforma oficial donde puedes crear, gestionar y compartir tus proyectos web fácilmente. Dev Code Web está diseñado para programadores y creadores que buscan una herramienta simple pero poderosa para desarrollar y mostrar sus páginas.",
+  "status": "oficial",
+  "dateAdded": "20215-09-01T09:00:30.000Z"
+  },
+  {
+  "id": "volume-shader",
+  "title": "Volumen Shader",
+  "url": "https://volume-shader.netlify.app",
+  "tags": ["shader", "volumen", "test", "graphics", "webgl", "celular", "dispositivo", "oficial", "performance", "3D"],
+  "initials": "VS",
+  "description": "Demo interactiva que pone a prueba el rendimiento de tu dispositivo en cualquier plataforma. Volumen Shader utiliza gráficos 3D y WebGL para mostrar efectos de volumen avanzados y evaluar la capacidad de tu hardware en tiempo real.",
+  "status": "oficial",
+  "dateAdded": "2025-09-01T09:00:30.000Z"
+},
+   {
+  "id": "qr-generator",
+  "title": "QR Generator",
+  "url": "https://devcenter-qr.netlify.app",
+  "tags": ["qr", "generator", "códigoQR", "web", "celular", "herramienta", "oficial", "rápido", "práctico"],
+  "initials": "QR",
+  "description": "Genera códigos QR de manera rápida y sencilla desde cualquier dispositivo. Ideal para compartir enlaces, contactos o información importante con un solo escaneo.",
+  "status": "oficial",
+  "dateAdded": "2025-09-01T09:00:30.000Z"
+}
+
+
+
+
+
+
+
+    
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+]}

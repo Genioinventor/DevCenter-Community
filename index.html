@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevCenter</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3), transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3), transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 226, 0.3), transparent 50%);
+    }
+
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.1;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+      padding: 60px 0;
+    }
+
+    .header h1 {
+      font-size: 5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      animation: gradientShift 4s ease-in-out infinite, fadeInDown 1s ease-out;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      font-size: 1.4rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto 50px;
+      position: relative;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 20px 60px 20px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      font-size: 1.1rem;
+      color: white;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-box:focus {
+      border-color: rgba(102, 126, 234, 0.5);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 30px rgba(102, 126, 234, 0.2);
+    }
+
+    .search-box::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .project-card {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 40px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .project-card:hover::before {
+      opacity: 1;
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .project-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .project-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .project-title {
+      flex: 1;
+    }
+
+    .project-title h3 {
+      font-size: 1.8rem;
+      color: #ffffff;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .project-fav {
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.7);
+      transition: color 0.3s ease;
+    }
+
+    .project-fav:hover {
+      color: #facc15;
+    }
+
+    .loading-message {
+      grid-column: 1 / -1;
+      /* ocupa todo el grid */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      color: #555;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 4px solid rgba(0, 0, 0, 0.2);
+      border-top: 4px solid #4ade80;
+      /* verde bonito */
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ============ 50 BADGES DE STATUS ============ */
+    .status-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-right: 6px;
+    }
+
+    /* 01 - new */
+    .status-new {
+      background: rgba(59, 130, 246, 0.18);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+
+    /* 02 - beta */
+    .status-beta {
+      background: rgba(251, 191, 36, 0.18);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.25);
+    }
+
+    /* 07 - experimental */
+    .status-experimental {
+      background: rgba(236, 72, 153, 0.14);
+      color: #ec4899;
+      border: 1px solid rgba(236, 72, 153, 0.2);
+    }
+
+    /* 08 - deprecated */
+    .status-deprecated {
+      background: rgba(107, 114, 128, 0.12);
+      color: #6b7280;
+      border: 1px solid rgba(107, 114, 128, 0.18);
+    }
+
+    /* 09 - urgent */
+    .status-urgent {
+      background: rgba(239, 68, 68, 0.14);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    /* 18 - premium */
+    .status-premium {
+      background: rgba(217, 119, 6, 0.14);
+      color: #d97706;
+      border: 1px solid rgba(217, 119, 6, 0.2);
+    }
+
+    /* 19 - free */
+    .status-free {
+      background: rgba(34, 197, 94, 0.12);
+      color: #16a34a;
+      border: 1px solid rgba(34, 197, 94, 0.18);
+    }
+
+    /* 20 - demo */
+    .status-demo {
+      background: rgba(2, 132, 199, 0.14);
+      color: #0284c7;
+      border: 1px solid rgba(2, 132, 199, 0.2);
+    }
+
+    /* 21 - archived */
+    .status-archived {
+      background: rgba(71, 85, 105, 0.12);
+      color: #475569;
+      border: 1px solid rgba(71, 85, 105, 0.18);
+    }
+
+    /* 28 - stable */
+    .status-stable {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.18);
+    }
+
+    /* 43 - community */
+    .status-community {
+      background: rgba(99, 102, 241, 0.14);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+
+    /* 61 - archivado */
+    .status-archivado {
+      background: rgba(107, 114, 128, 0.12);
+      color: #374151;
+      border: 1px solid rgba(107, 114, 128, 0.18);
+    }
+
+
+    /* 66 - activo */
+    .status-activo {
+      background: rgba(34, 197, 94, 0.15);
+      color: #047857;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+    }
+
+
+    /* 69 - publicado */
+    .status-publicado {
+      background: rgba(59, 130, 246, 0.15);
+      color: #1d4ed8;
+      border: 1px solid rgba(59, 130, 246, 0.22);
+    }
+
+
+
+
+
+    /* 101 - oficial (Neón Épico) */
+    .status-oficial {
+      background: linear-gradient(135deg, rgba(20, 255, 90, 0.15), rgba(0, 80, 20, 0.25));
+      color: #00ff88;
+      /* Verde neón */
+      border: 2px solid #00ff88;
+      border-radius: 14px;
+      padding: 12px 20px;
+      font-weight: bold;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+
+      /* Glow estilo neón */
+      text-shadow: 0 0 6px #00ff88,
+        0 0 12px #00ff88,
+        0 0 24px #00ff88;
+      box-shadow: 0 0 12px rgba(0, 255, 136, 0.8),
+        0 0 24px rgba(0, 255, 136, 0.6),
+        0 0 48px rgba(0, 255, 136, 0.4);
+
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+    }
+
+    /* Hover con efecto neón más intenso */
+    .status-oficial:hover {
+      color: #baffd9;
+      text-shadow: 0 0 10px #00ff88,
+        0 0 20px #00ff88,
+        0 0 40px #00ff88,
+        0 0 80px #00ff88;
+      box-shadow: 0 0 16px rgba(0, 255, 136, 1),
+        0 0 32px rgba(0, 255, 136, 0.8),
+        0 0 64px rgba(0, 255, 136, 0.6);
+      transform: scale(1.05);
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+
+    .project-link:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      animation: modalSlideIn 0.3s ease-out;
+    }
+
+    .modal h3 {
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: rgba(102, 126, 234, 0.5);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: flex-end;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    @keyframes gradientShift {
+
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255, 255, 255, 0.5);
+      display: none;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    #pageIndicator {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 3rem;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .project-card {
+        padding: 30px 20px;
+      }
+
+      .modal-content {
+        margin: 20px;
+        padding: 30px 20px;
+      }
+
+      #pageIndicator {
+        font-weight: 600;
+        font-size: 0.90rem !important;
+      }
+    }
+
+    .fav-btn span {
+      font-size: 2rem !important;
+      /* más grande la estrella */
+      line-height: 1;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+
+<body>
+
+
+
+
+
+  <!-- DevCenter Security-->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ========== CONFIGURACIÓN ========== */
+      const DEV_KEY_PROTECT = true;
+      const DEV_RIGHTCLICK_PROTECT = true;
+      const DEV_CTRL_PROTECT = true;
+      const DEV_RELOAD_ON_ALERT = true;          // recargar cuando la alarma real se dispare
+      const RELOAD_DELAY_MS = 900;
+      const DETECTION_REQUIRED = 2;              // cuántas detecciones en la ventana disparan la alarma
+      const DETECTION_WINDOW_MS = 3000;          // ventana de detección (ms)
+      const GRACE_PERIOD_MS = 3000;              // tiempo inicial para evitar detecciones por carga
+      const WHITELIST_ORIGINS = [location.origin]; // añade CDNs de confianza si aplican
+      const DISABLE_QUERY_PARAM = 'dc=off';      // añade ?dc=off para desactivar en pruebas
+
+      /* ========== HELPERS / ESTADO ========== */
+      function now() { return Date.now(); }
+      function isDisabledByQuery() { return location.search && location.search.indexOf(DISABLE_QUERY_PARAM) !== -1; }
+
+      if (isDisabledByQuery()) return; // no activar si pruebas
+
+      // registrar detecciones (timestamps) y devolver cuantas hay en la ventana
+      let detectionTimes = [];
+      function registerDetection(reason) {
+        try {
+          const t = now();
+          detectionTimes.push({ t, reason });
+          const cutoff = t - DETECTION_WINDOW_MS;
+          detectionTimes = detectionTimes.filter(x => x.t >= cutoff);
+          // log ligero para debug (no exponer mucho)
+          try { (console && console.info) && console.info('[DC] detection:', reason, 'count:', detectionTimes.length); } catch (e) { }
+          return detectionTimes.length;
+        } catch (e) { return 0; }
+      }
+
+      /* ========== MARKER (no reescribible) ========== */
+      try {
+        Object.defineProperty(window, '__DC_SECURE__', {
+          value: 'locked',
+          writable: false,
+          configurable: false,
+          enumerable: false
+        });
+      } catch (e) {
+        try { window.__DC_SECURE__ = 'locked'; } catch (e) { }
+      }
+
+      /* ========== UI: aviso y alarma ========== */
+      function showNotice(text) {
+        try {
+          if (document.getElementById('dc-notice')) return;
+          const el = document.createElement('div');
+          el.id = 'dc-notice';
+          Object.assign(el.style, {
+            position: 'fixed', right: '16px', bottom: '18px',
+            background: 'rgba(0,0,0,0.78)', color: '#ffd54f', padding: '10px 14px',
+            borderRadius: '10px', zIndex: 2147483646, fontWeight: 600, fontSize: '0.95rem',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.35)'
+          });
+          el.textContent = 'DevCenter: ' + text;
+          (document.documentElement || document.body).appendChild(el);
+          setTimeout(() => { try { el.remove(); } catch (e) { } }, 4500);
+        } catch (e) { }
+      }
+
+      function showAlarmAndMaybeReload() {
+        try {
+          if (document.getElementById('dc-warning')) return;
+          const panel = document.createElement('div');
+          panel.id = 'dc-warning';
+          Object.assign(panel.style, {
+            position: 'fixed', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexDirection: 'column', gap: '12px',
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.98), rgba(5,5,5,0.98))',
+            color: '#facc15', fontWeight: '700', fontSize: '1.2rem', zIndex: 2147483647
+          });
+          panel.innerHTML = '<div style="font-size:1.8rem">🛡️ DevCenter Security 🛡️</div>'
+            + '<div style="margin-top:8px;opacity:0.95">Actividad sospechosa confirmada.</div>'
+            + '<div style="margin-top:6px;font-size:0.95rem;opacity:0.9">Recargando Pagina...</div>';
+          (document.documentElement || document.body).appendChild(panel);
+        } catch (e) { }
+        if (DEV_RELOAD_ON_ALERT) {
+          setTimeout(() => { try { location.reload(); } catch (e) { try { location.reload(true); } catch (_) { } } }, RELOAD_DELAY_MS);
+        }
+      }
+
+      /* ========== DETECTORES ========== */
+
+      // 1) Detectar atajos/teclas de devtools (no disparar alarmas al primer intento)
+      function handleKeydown(e) {
+        try {
+          // F12
+          const key = String(e.key || '');
+          const up = key.toUpperCase();
+          const isF12 = key === 'F12';
+          const isCtrlShiftI = (e.ctrlKey && e.shiftKey && up === 'I');
+          const isCtrlShiftJ = (e.ctrlKey && e.shiftKey && up === 'J');
+          const isMetaAltI = (e.metaKey && e.altKey && up === 'I'); // macOS alternativa
+          if (DEV_KEY_PROTECT && (isF12 || isCtrlShiftI || isCtrlShiftJ || isMetaAltI)) {
+            const c = registerDetection('devtools-key');
+            showNotice('Intento de herramientas de desarrollo detectado (' + c + ')');
+            if (c >= DETECTION_REQUIRED) { showAlarmAndMaybeReload(); }
+            // no evitar inmediatamente: permitimos una primera notificación
+            e.preventDefault(); e.stopImmediatePropagation();
+            return;
+          }
+
+          // Ctrl-protect: permitir solo C, V, X (y F para buscar? no)
+          if (DEV_CTRL_PROTECT && e.ctrlKey) {
+            const k = up;
+            const allowed = ['C', 'V', 'X'];
+            if (k.length === 1 && allowed.indexOf(k) === -1) {
+              e.preventDefault(); e.stopImmediatePropagation();
+              const c = registerDetection('ctrl-blocked-' + k);
+              showNotice('Atajo Ctrl+' + k + ' bloqueado');
+              if (c >= DETECTION_REQUIRED) { showAlarmAndMaybeReload(); }
+              return;
+            }
+          }
+        } catch (err) { }
+      }
+
+      if (DEV_KEY_PROTECT) {
+        window.addEventListener('keydown', handleKeydown, { capture: true, passive: false });
+      }
+
+      // 2) Bloqueo de clic derecho (configurable)
+      if (DEV_RIGHTCLICK_PROTECT) {
+        document.addEventListener('contextmenu', function (e) {
+          try { e.preventDefault(); e.stopImmediatePropagation(); const c = registerDetection('rightclick'); showNotice('Clic derecho bloqueado (' + c + ')'); if (c >= DETECTION_REQUIRED) showAlarmAndMaybeReload(); } catch (e) { }
+        }, { capture: true });
+      }
+
+      // 3) Detectar eliminación/manipulación del marcador __DC_SECURE__
+      let markerExists = (typeof window.__DC_SECURE__ !== 'undefined');
+      setInterval(function () {
+        try {
+          const exists = (typeof window.__DC_SECURE__ !== 'undefined');
+          if (markerExists && !exists) {
+            const c = registerDetection('marker-removed');
+            showNotice('Intento de manipulación detectado (' + c + ')');
+            if (c >= DETECTION_REQUIRED) showAlarmAndMaybeReload();
+          }
+          markerExists = exists;
+        } catch (e) { }
+      }, 1000);
+
+      // 4) MutationObserver: detectar scripts dinámicos con src desde orígenes NO permitidos
+      try {
+        const mo = new MutationObserver(function (muts) {
+          try {
+            const sinceStart = now() - (window.__DC_STARTED_AT || (window.__DC_STARTED_AT = now()));
+            if (sinceStart < GRACE_PERIOD_MS) return; // respeto grace period
+            for (let m of muts) {
+              if (m.addedNodes && m.addedNodes.length) {
+                for (let n of m.addedNodes) {
+                  try {
+                    if (!n || !n.tagName) continue;
+                    if (n.tagName.toLowerCase() === 'script') {
+                      const src = n.getAttribute && n.getAttribute('src');
+                      if (!src) continue; // inline script no cuenta
+                      let origin;
+                      try { origin = (new URL(src, location.href)).origin; } catch (e) { origin = 'malformed'; }
+                      if (WHITELIST_ORIGINS.indexOf(origin) === -1) {
+                        const c = registerDetection('script-inject:' + origin);
+                        showNotice('Script externo dinámico detectado (' + c + ')');
+                        if (c >= DETECTION_REQUIRED) showAlarmAndMaybeReload();
+                        return;
+                      }
+                    }
+                  } catch (e) { }
+                }
+              }
+            }
+          } catch (e) { }
+        });
+        mo.observe(document.documentElement || document, { childList: true, subtree: true });
+        try { Object.freeze(mo); } catch (e) { }
+      } catch (e) { }
+
+      // 5) Protección ligera de console.*: intentar sellar para dificultar overrride
+      (function protectConsole() {
+        try {
+          const original = {};
+          ['log', 'info', 'warn', 'error', 'debug'].forEach(n => { original[n] = console[n] && console[n].bind(console); });
+          try {
+            Object.defineProperty(console, '__dc_orig__', { value: original, writable: false, configurable: false, enumerable: false });
+          } catch (e) { }
+          ['log', 'info', 'warn', 'error', 'debug'].forEach(n => {
+            try {
+              Object.defineProperty(console, n, {
+                configurable: false,
+                enumerable: false,
+                writable: false,
+                value: function () { try { if (original[n]) original[n].apply(console, arguments); } catch (e) { } }
+              });
+            } catch (e) { }
+          });
+        } catch (e) { }
+      }());
+
+      // 6) Integridad por hash ligero (registro de funciones internas)
+      function djb2(s) {
+        let h = 5381;
+        for (let i = 0; i < s.length; i++) { h = ((h << 5) + h) + s.charCodeAt(i); h = h & 0xffffffff; }
+        return (h >>> 0).toString(16);
+      }
+      const integrity = {};
+      const internalsForHash = {
+        handleKeydown: handleKeydown.toString ? handleKeydown : function () { },
+        // note: other functions could be registered if needed
+      };
+      try {
+        Object.keys(internalsForHash).forEach(k => { try { integrity[k] = djb2(String(internalsForHash[k])); } catch (e) { } });
+      } catch (e) { }
+
+      setInterval(function () {
+        try {
+          // check small subset of integrity
+          for (let k in integrity) {
+            try {
+              const current = djb2(String(internalsForHash[k]));
+              if (current !== integrity[k]) {
+                const c = registerDetection('integrity:' + k);
+                showNotice('Posible alteración de código (' + c + ')');
+                if (c >= DETECTION_REQUIRED) showAlarmAndMaybeReload();
+                return;
+              }
+            } catch (e) { }
+          }
+        } catch (e) { }
+      }, 2500);
+
+      /* ============================== DevCenter Segurity ============================== */
+      try { (console && console.info) && console.info('[DC] DevCenter Security inicializado'); } catch (e) { }
+    })();
+  </script>
+  <!-- /DevCenter Security -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+  <div class="background"></div>
+  <div class="grid-overlay"></div>
+  <div class="container">
+    <div class="header">
+      <h1>DevCenter</h1>
+      <p>Portal de Proyectos y Herramientas de Desarrollo</p>
+    </div>
+
+    <div class="search-container">
+      <input type="text" class="search-box" placeholder="Buscar proyectos..." id="searchBox">
+      <span class="search-icon">🔍</span>
+    </div>
+
+    <!-- FAVORITOS ARRIBA SIN TITULO NI ICONO -->
+    <div id="favoritesSection" style="margin-bottom:10px;display:none;">
+      <div id="favoritesGrid" class="projects-grid"></div>
+    </div>
+    <!-- /FAVORITOS -->
+
+    <div class="projects-grid" id="projectsGrid">
+      <div class="loading-message">
+        <div class="spinner"></div>
+        <p>Cargando proyectos...</p>
+      </div>
+    </div>
+
+    <!-- PAGINACIÓN -->
+    <div id="paginationControls"
+      style="display:flex;align-items:center;justify-content:center;gap:18px;margin:32px 0 0 0;">
+      <button id="prevPageBtn" class="btn btn-secondary" style="min-width:90px;">Anterior</button>
+      <span id="pageIndicator" style="font-weight:600;font-size:1.1rem;"></span>
+      <button id="nextPageBtn" class="btn btn-primary" style="min-width:90px;">Siguiente</button>
+      <label id="pageSizeLabel" style="margin-left:24px;font-size:0.98rem;display:none;">
+        Proyectos por sección:
+        <input id="pageSizeInput" type="number" min="1" max="99" value="10"
+          style="width:48px;padding:4px 6px;border-radius:6px;border:1px solid #ccc;margin-left:4px;">
+      </label>
+    </div>
+
+    <!-- 
+            PLANTILLA PARA NUEVAS PÁGINAS:
+            
+            <div class="project-card" data-tags="tags separados por espacios">
+                <div class="project-header">
+                    <div class="project-icon">INICIALES</div>
+                    <div class="project-title">
+                        <h3>Nombre del Proyecto</h3>
+                        <span class="status-badge status-fixed">Estado</span>
+                    </div>
+                </div>
+                <a href="URL_AQUI" target="_blank" class="project-link">
+                    Abrir Proyecto
+                    <span>🚀</span>
+                </a>
+            </div>
+            -->
+  </div>
+
+  <div class="empty-state" id="emptyState">
+    <h3>No se encontraron proyectos</h3>
+    <p>Intenta con otros términos de búsqueda</p>
+    <a href="https://dev-code-web.netlify.app" target="_blank" class="create-website-btn">
+      Crear Tu Pagina Web
+    </a>
+  </div>
+
+  <!-- Panel HTML (solo una vez, elimina duplicado) -->
+  <div id="projectPanel" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="panel-card" role="document">
+      <button id="panelClose" class="panel-close" aria-label="Cerrar panel">✕</button>
+      <div class="panel-top">
+        <div class="panel-initials" id="panelInitials">--</div>
+        <div class="panel-title">
+          <h2 id="panelTitle" style="display:flex;align-items:center;gap:10px;">
+            <span id="panelTitleText">Nombre del Proyecto</span>
+            <button id="panelFavBtn" title="Añadir a Favoritos"
+              style="background:none;border:none;cursor:pointer;padding:0;">
+              <span id="panelFavIcon" style="font-size:1.5rem;color:#facc15;">&#9734;</span>
+            </button>
+          </h2>
+          <div class="panel-meta">
+            Publicado — <span id="panelDate">hace poco</span>
+          </div>
+          <a id="panelVisit" class="btn-visit" href="#" target="_blank" rel="noopener">Visitar web →</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="panelDescription" class="panel-description">Descripción del proyecto...</div>
+        <div class="panel-divider" aria-hidden="true"></div>
+        <div id="panelTags" class="panel-tags" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <!-- ================= BUUSQUEDAS SECRETAS  ================= -->
+  <script>
+    const searchBox = document.getElementById('searchBox');
+    searchBox.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        const query = searchBox.value.trim();
+        if (query === '1') {
+          window.location.href = 'https://addon-devcenter.netlify.app';
+        }
+      }
+    });
+  </script>
+  <!-- ================= BUUSQUEDAS SECRETAS  ================= -->
+
+  <!-- ================= PANEL MEJORADO  ================= -->
+  <!-- Se elimina el segundo panel y el script duplicado de favoritos/panel -->
+  <style>
+    :root {
+      --panel-bg: rgba(6, 6, 10, 0.86);
+      --card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
+      --accent: linear-gradient(90deg, #667eea, #764ba2);
+      --accent-2: linear-gradient(90deg, #22c55e, #16a34a);
+      --glass: rgba(255, 255, 255, 0.04);
+      --radius: 18px;
+    }
+
+    #projectPanel {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1200;
+      background: radial-gradient(circle at 50% 20%, rgba(0, 0, 0, 0.35), transparent 20%), var(--panel-bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    #projectPanel.show {
+      display: flex;
+      animation: panelFadeIn 260ms ease-out forwards;
+    }
+
+    #projectPanel.hide {
+      animation: panelFadeOut 200ms ease-in forwards;
+    }
+
+    @keyframes panelFadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes panelFadeOut {
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0;
+      }
+    }
+
+    .panel-card {
+      width: calc(100% - 32px);
+      max-width: 980px;
+      max-height: calc(100vh - 48px);
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: 0 30px 80px rgba(2, 6, 23, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      transform: translateY(8px);
+      transition: transform 260ms cubic-bezier(.2, .9, .2, 1);
+      overflow: hidden;
+    }
+
+    #projectPanel.show .panel-card {
+      transform: translateY(0);
+    }
+
+    .panel-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .panel-initials {
+      min-width: 64px;
+      min-height: 64px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.15rem;
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.14), rgba(250, 204, 21, 0.06));
+      color: #facc15;
+      border: 1px solid rgba(250, 204, 21, 0.12);
+      box-shadow: 0 8px 32px rgba(250, 204, 21, 0.06);
+      flex-shrink: 0;
+    }
+
+    .panel-title {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .panel-title h2 {
+      font-size: 1.6rem;
+      line-height: 1.05;
+      margin: 0;
+      color: #fff;
+    }
+
+    .panel-meta {
+      font-size: 0.87rem;
+      color: rgba(255, 255, 255, 0.68);
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-visit {
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      text-align: center;
+      padding: 18px 24px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      border-radius: 16px;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.18);
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    .btn-visit:active {
+      transform: translateY(1px);
+    }
+
+    .btn-visit:focus {
+      box-shadow: 0 12px 36px rgba(102, 126, 234, 0.28);
+    }
+
+    .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 6px;
+      overflow: auto;
+    }
+
+    .panel-description {
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 1rem;
+      line-height: 1.45;
+      max-height: 36vh;
+      overflow: auto;
+      padding-right: 8px;
+    }
+
+    .panel-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+      margin: 6px 0 0 0;
+      border-radius: 2px;
+    }
+
+    .panel-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .tag-chip {
+      font-size: 0.82rem;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      user-select: none;
+    }
+
+    .panel-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.85);
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+    }
+
+    .panel-close:active {
+      transform: translateY(1px);
+    }
+
+    /* 📱 Ajustes para móviles */
+    @media (max-width: 720px) {
+      .panel-card {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+        padding: 18px;
+        justify-content: flex-start;
+      }
+
+      .panel-initials {
+        min-width: 56px;
+        min-height: 56px;
+        font-size: 1rem;
+        border-radius: 12px;
+      }
+
+      .panel-title h2 {
+        font-size: 1.4rem;
+      }
+
+      .panel-description {
+        max-height: 60vh;
+        font-size: 0.96rem;
+      }
+
+      /* Botón cerrar rojo en móvil */
+      .panel-close {
+        top: 8px;
+        right: 8px;
+        padding: 8px;
+        background: rgba(239, 68, 68, 0.25);
+        border: 1px solid rgba(239, 68, 68, 0.45);
+        color: #ef4444;
+        font-weight: 900;
+        z-index: 3000;
+      }
+
+      .panel-meta {
+        font-size: 0.82rem
+      }
+
+      /* Botón visitar más grande y debajo del título/fecha */
+      .btn-visit {
+        display: block;
+        width: 100%;
+        margin-top: 14px;
+        /* espacio después de título/fecha */
+        text-align: center;
+        padding: 18px 24px;
+        /* más grande */
+        font-size: 1.15rem;
+        font-weight: 600;
+        border-radius: 16px;
+      }
+
+      /* Acciones con flex-wrap */
+      .panel-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        margin-top: 14px;
+      }
+    }
+
+
+    /* Scroll personalizado */
+    .panel-description::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .panel-description::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+    }
+  </style>
+
+  <!-- Panel HTML -->
+  <div id="projectPanel" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="panel-card" role="document">
+      <button id="panelClose" class="panel-close" aria-label="Cerrar panel">✕</button>
+      <div class="panel-top">
+        <div class="panel-initials" id="panelInitials">--</div>
+        <div class="panel-title">
+          <h2 id="panelTitle" style="display:flex;align-items:center;gap:10px;">
+            <span id="panelTitleText">Nombre del Proyecto</span>
+            <button id="panelFavBtn" title="Añadir a Favoritos"
+              style="background:none;border:none;cursor:pointer;padding:0;">
+              <span id="panelFavIcon" style="font-size:1.5rem;color:#facc15;">&#9734;</span>
+            </button>
+          </h2>
+          <div class="panel-meta">
+            Publicado — <span id="panelDate">hace poco</span>
+          </div>
+          <a id="panelVisit" class="btn-visit" href="#" target="_blank" rel="noopener">Visitar web →</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="panelDescription" class="panel-description">Descripción del proyecto...</div>
+        <div class="panel-divider" aria-hidden="true"></div>
+        <div id="panelTags" class="panel-tags" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* --- PANEL: lógica para abrir con los datos del proyecto --- */
+    /* Usa el mismo BIN_ID que tu formulario (si quieres, cámbialo) */
+    const BIN_ID = '68af329cae596e708fd92637';
+
+    async function getProjectsFromBin() {
+      try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { cache: 'no-store' });
+        if (!res.ok) return [];
+        const json = await res.json();
+        return json.record?.projects || [];
+      } catch (e) {
+        console.warn('[panel] error fetching projects', e);
+        return [];
+      }
+    }
+
+    const projectsGrid = document.getElementById('projectsGrid');
+    const panel = document.getElementById('projectPanel');
+    const panelTitle = document.getElementById('panelTitle');
+    const panelVisit = document.getElementById('panelVisit');
+    const panelDescription = document.getElementById('panelDescription');
+    const panelTags = document.getElementById('panelTags');
+    const panelClose = document.getElementById('panelClose');
+    const panelInitials = document.getElementById('panelInitials');
+    const panelDate = document.getElementById('panelDate');
+    const panelFavBtn = document.getElementById('panelFavBtn');
+    const panelFavIcon = document.getElementById('panelFavIcon');
+
+    let cachedProjects = null; // cache para no pedir JSONBin en cada click
+
+    // Cache de favoritos para evitar múltiples accesos a localStorage
+    let favoritosCache = null;
+    function getFavoritos() {
+      if (favoritosCache) return favoritosCache;
+      const fav = localStorage.getItem('favoritos');
+      favoritosCache = fav ? fav.split(',').filter(Boolean) : [];
+      return favoritosCache;
+    }
+    function setFavoritos(arr) {
+      favoritosCache = arr;
+      localStorage.setItem('favoritos', arr.join(','));
+    }
+
+    async function ensureProjectsCache() {
+      if (cachedProjects) return cachedProjects;
+      cachedProjects = await getProjectsFromBin();
+      return cachedProjects;
+    }
+
+    /* función pública para mostrar el panel con un objeto project */
+    function showProjectPanel(project) {
+      panelTitle.textContent = project.title || 'Proyecto';
+      panelDescription.textContent = project.description || 'Sin descripción disponible.';
+      panelVisit.href = project.url || '#';
+      panelVisit.setAttribute('target', '_blank');
+      panelInitials.textContent = (project.initials || (project.title || '').slice(0, 2)).toUpperCase();
+      panelDate.textContent = project.dateAdded ? new Date(project.dateAdded).toLocaleString() : '—';
+
+      // estado de favorito
+      const isFavorito = getFavoritos().includes(project.url);
+      panelFavIcon.innerHTML = isFavorito ? '&#9733;' : '&#9734;'; // estrella llena o contorno
+      panelFavBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleFavorito(project.url);
+      };
+
+      // tags
+      panelTags.innerHTML = '';
+      const tags = Array.isArray(project.tags) ? project.tags : (project.tags ? String(project.tags).split(',').map(t => t.trim()).filter(Boolean) : []);
+      if (tags.length) {
+        tags.forEach(t => {
+          const el = document.createElement('span');
+          el.className = 'tag-chip';
+          el.textContent = t;
+          panelTags.appendChild(el);
+        });
+      } else {
+        const el = document.createElement('span');
+        el.className = 'tag-chip';
+        el.textContent = 'Sin tags';
+        panelTags.appendChild(el);
+      }
+
+      // muestra panel
+      panel.classList.remove('hide');
+      panel.classList.add('show');
+      panel.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden'; // evitar scroll trasero
+
+      // focus accesible
+      setTimeout(() => panelVisit.focus(), 160);
+    }
+
+    /* delegación: escucha clicks en los enlaces .project-link dentro del grid */
+    projectsGrid.addEventListener('click', async (ev) => {
+      const a = ev.target.closest('a.project-link');
+      if (!a) return; // no es un click sobre un link de proyecto
+      ev.preventDefault();
+
+      const href = a.getAttribute('href') || a.dataset.url;
+      const card = a.closest('.project-card');
+
+      // intento encontrar datos en JSONBin por URL (más fiable)
+      const projects = await ensureProjectsCache();
+      let project = projects.find(p => {
+        if (!p || !p.url) return false;
+        try { return p.url.replace(/\/+$/, '') === (href || '').replace(/\/+$/, ''); } catch (e) { return false; }
+      });
+
+      // si no encontramos en el bin, intentamos sacar info del DOM (título, tags, data-description)
+      if (project) {
+        showProjectPanel(project);
+      } else {
+        // fallback: DOM scraping
+        const title = card ? (card.querySelector('.project-title h3')?.textContent || '') : (a.textContent || '');
+        const description = card ? (card.getAttribute('data-description') || '') : '';
+        const dataTags = card ? (card.getAttribute('data-tags') || '') : '';
+        const initials = card ? (card.querySelector('.project-icon')?.textContent || '') : '';
+        const tags = dataTags ? dataTags.split(/\s+/).filter(Boolean) : [];
+
+        showProjectPanel({
+          title: title || href || 'Proyecto',
+          url: href || '#',
+          description: description || 'Sin descripción disponible.',
+          tags,
+          initials,
+          dateAdded: null
+        });
+      }
+    });
+
+    /* cerrar */
+    function closePanel() {
+      panel.classList.remove('show');
+      panel.classList.add('hide');
+      panel.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+    panelClose.addEventListener('click', closePanel);
+    panel.addEventListener('click', (e) => {
+      if (e.target === panel) closePanel(); // clic en overlay
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
+
+    /* FAVORITOS: lógica para manejar proyectos favoritos */
+    function toggleFavorito(url) {
+      let favoritos = getFavoritos();
+      if (favoritos.includes(url)) {
+        // ya es favorito, quitar
+        favoritos = favoritos.filter(f => f !== url);
+        showNotice('Proyecto quitado de Favoritos');
+      } else {
+        // no es favorito, añadir
+        favoritos.push(url);
+        showNotice('Proyecto añadido a Favoritos');
+      }
+      setFavoritos(favoritos);
+      updateFavoritosSection();
+      updatePanelFavoritoIcon(url);
+    }
+
+    function updateFavoritosSection() {
+      const favoritos = getFavoritos();
+      const favoritesGrid = document.getElementById('favoritesGrid');
+      favoritesGrid.innerHTML = ''; // limpiar grid
+
+      if (favoritos.length === 0) {
+        document.getElementById('favoritesSection').style.display = 'none';
+        return;
+      }
+
+      // Usar cache de proyectos para evitar múltiples accesos
+      ensureProjectsCache().then(projects => {
+        favoritos.forEach(url => {
+          const project = projects.find(p => p.url === url);
+          if (project) {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+            card.setAttribute('data-url', project.url);
+            card.setAttribute('data-description', project.description);
+            card.setAttribute('data-tags', project.tags);
+            card.innerHTML = `
+              <div class="project-header">
+                <div class="project-icon">${project.initials}</div>
+                <div class="project-title">
+                  <h3>${project.title}</h3>
+                </div>
+              </div>
+              <a href="${project.url}" target="_blank" class="project-link">
+                Abrir Proyecto
+                <span>🚀</span>
+              </a>
+            `;
+            favoritesGrid.appendChild(card);
+          }
+        });
+        document.getElementById('favoritesSection').style.display = 'block';
+      });
+    }
+
+    function updatePanelFavoritoIcon(url) {
+      const isFavorito = getFavoritos().includes(url);
+      panelFavIcon.innerHTML = isFavorito ? '&#9733;' : '&#9734;'; // estrella llena o contorno
+    }
+
+    // Limpia cache de favoritos al cambiar de pestaña
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'favoritos') favoritosCache = null;
+      if (e.key === 'dc_last_add_ts') cachedProjects = null;
+    });
+
+    // inicializar sección de favoritos
+    updateFavoritosSection();
+  </script>
+  <!-- ================= FIN PANEL MEJORADO ================= -->
+
+
+
+</body>
+
+</html>

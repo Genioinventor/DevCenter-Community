@@ -1,0 +1,13 @@
+ {
+      "id": "Dev-code-web",
+      "title": "Dev Code Web",
+      "url": "https://dev-code-web.netlify.app",
+      "tags": ["1","2","3","4","5","6","7","8","9","10"],
+      "initials": "DW",
+      "status": "oficial"
+    }
+
+
+    03 → new 
+    66 → activo
+    67 → inactivo
