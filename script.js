@@ -14,7 +14,7 @@ const POP_FALLBACK_MEAN = 3.5; // Promedio por defecto si no hay reseñas global
 
 // ==================== PROYECTOS PROMOCIONALES ====================
 const ENABLE_PROMOTED_SECTION = true; // Cambiar a false para desactivar
-let promo = "PROMOCIÓN"; // Cambiar el texto de la promocion 
+let promo = "Nuevo"; // Cambiar el texto de la promocion 
 // Solo nombres de proyectos que ya existen en JSONBin
 const PROMOTED_PROJECT_NAMES = [
   "DevCenter Code"
