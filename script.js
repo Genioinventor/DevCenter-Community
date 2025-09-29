@@ -13,12 +13,12 @@ const POP_REVIEW_BONUS_K = 0.1; // Factor de bonificación por número de reseñ
 const POP_FALLBACK_MEAN = 3.5; // Promedio por defecto si no hay reseñas globales
 
 // ==================== PROYECTOS PROMOCIONALES ====================
-const ENABLE_PROMOTED_SECTION = false; // Cambiar a false para desactivar
+const ENABLE_PROMOTED_SECTION = true; // Cambiar a false para desactivar
 let promo = "PROMOCIÓN"; // Cambiar el texto de la promocion 
 // Solo nombres de proyectos que ya existen en JSONBin
 const PROMOTED_PROJECT_NAMES = [
-  "DevCenter IA",
-  "QR Generator"
+  "DevCenter Code"
+
 ];
 // ==================== CONFIGURACIÓN ====================
 window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
