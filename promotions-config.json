@@ -1,0 +1,24 @@
+{
+  "promotions": [
+    {
+      
+      "projectName": "DevCenter Code",
+      "promoLabel": "Nuevo",
+      "startDate": "2025-09-29",
+      "endDate": "2025-10-31",
+      "dailyViewLimit": 100,
+      "priority": 1,
+      "active": true
+    },
+    {
+      
+      "projectName": "QR Generator",
+      "promoLabel": "OFERTA ESPECIAL",
+      "startDate": "2025-09-29",
+      "endDate": "2025-10-15",
+      "dailyViewLimit": 500,
+      "priority": 1,
+      "active": false
+    }
+  ]
+}
