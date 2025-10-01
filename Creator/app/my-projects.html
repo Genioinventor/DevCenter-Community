@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Proyectos - DevCenter</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0a18 0%, #1a1a2e 50%, #16213e 100%);
+      color: #fff;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 0 20px 80px;
+    }
+    
+    h1 {
+      color: #facc15;
+      text-align: center;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      margin-bottom: 1rem;
+      text-shadow: 0 0 25px rgba(250, 204, 21, 0.5);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #9ca3af;
+      margin-bottom: 2.5rem;
+      font-size: 1rem;
+    }
+
+    .actions-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .back-btn, .sync-btn, .add-btn {
+      display: inline-block;
+      padding: 13px 26px;
+      color: white;
+      text-decoration: none;
+      border-radius: 14px;
+      font-weight: 700;
+      transition: all 0.25s;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .back-btn {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25);
+    }
+
+    .sync-btn {
+      background: linear-gradient(45deg, #22c55e, #16a34a);
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.25);
+    }
+
+    .add-btn {
+      background: linear-gradient(45deg, #f59e0b, #d97706);
+      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25);
+      margin-left: auto;
+    }
+
+    .back-btn:hover, .sync-btn:hover, .add-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .projects-list {
+      display: grid;
+      gap: 20px;
+    }
+
+    .project-card {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(250, 204, 21, 0.25);
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transition: all 0.25s;
+      position: relative;
+    }
+
+    .project-card.pending {
+      border: 1px solid rgba(251, 191, 36, 0.5);
+      background: rgba(251, 191, 36, 0.05);
+    }
+
+    .project-card.synced {
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      background: rgba(34, 197, 94, 0.05);
+    }
+
+    .sync-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .sync-badge.pending {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .sync-badge.synced {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .project-card:hover {
+      border-color: rgba(250, 204, 21, 0.35);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 15px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .project-title { font-size: 1.35rem; color: #facc15; margin-bottom: 10px; font-weight: 700; }
+    .project-url { color: #60a5fa; font-size: 0.9rem; word-break: break-all; margin-bottom: 10px; }
+    .project-description { color: #e2e8f0; margin-bottom: 12px; line-height: 1.5; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .tag { 
+      background: rgba(59, 130, 246, 0.16); 
+      color: #60a5fa; 
+      padding: 5px 12px; 
+      border-radius: 14px; 
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .project-meta { font-size: 0.85rem; color: #9ca3af; margin-top: 10px; }
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.25s;
+    }
+
+    .btn-edit {
+      background: linear-gradient(45deg, #22c55e, #16a34a);
+      color: white;
+      margin-right: 8px;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+    }
+
+    .btn-delete {
+      background: linear-gradient(45deg, #ef4444, #dc2626);
+      color: white;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    }
+
+    .btn:hover { 
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-edit:hover {
+      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.35);
+    }
+
+    .btn-delete:hover {
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-content {
+      background: #18181b;
+      border-radius: 20px;
+      padding: clamp(20px, 5vw, 32px);
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid rgba(250, 204, 21, 0.25);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal h2 { color: #facc15; margin-bottom: 20px; }
+
+    .form-group { margin-bottom: 15px; }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #e2e8f0;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 11px 13px;
+      background: rgba(255, 255, 255, 0.09);
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.25s;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+      padding-right: 35px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23facc15' d='M1.41 0L6 4.58L10.59 0L12 1.41l-6 6l-6-6z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 12px;
+    }
+
+    select option {
+      background: #18181b;
+      color: #fff;
+      padding: 10px;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #facc15;
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.18), 0 4px 15px rgba(0, 0, 0, 0.3);
+      transform: translateY(-1px);
+    }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-save {
+      flex: 1;
+      background: linear-gradient(45deg, #22c55e, #16a34a);
+      color: white;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.25);
+    }
+
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
+    }
+
+    .btn-save:active {
+      transform: translateY(0);
+    }
+
+    .btn-cancel {
+      flex: 1;
+      background: linear-gradient(45deg, #6b7280, #4b5563);
+      color: white;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 6px 18px rgba(107, 114, 128, 0.25);
+    }
+
+    .btn-cancel:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(107, 114, 128, 0.35);
+    }
+
+    .btn-cancel:active {
+      transform: translateY(0);
+    }
+
+    .message {
+      text-align: center;
+      padding: 12px;
+      border-radius: 10px;
+      margin: 20px 0;
+      font-weight: 600;
+    }
+
+    .message.success {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #4ade80;
+    }
+
+    .message.error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #9ca3af;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .status-activo { background: rgba(34, 197, 94, 0.15); color: #047857; border: 1px solid rgba(34, 197, 94, 0.22); }
+    .status-community { background: rgba(99, 102, 241, 0.14); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.2); }
+    .status-beta { background: rgba(251, 191, 36, 0.18); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.25); }
+    .status-stable { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.18); }
+    .status-experimental { background: rgba(236, 72, 153, 0.14); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.2); }
+    .status-premium { background: rgba(217, 119, 6, 0.14); color: #d97706; border: 1px solid rgba(217, 119, 6, 0.2); }
+    .status-free { background: rgba(34, 197, 94, 0.12); color: #16a34a; border: 1px solid rgba(34, 197, 94, 0.18); }
+    .status-demo { background: rgba(2, 132, 199, 0.14); color: #0284c7; border: 1px solid rgba(2, 132, 199, 0.2); }
+    .status-urgent { background: rgba(239, 68, 68, 0.14); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+    .status-archived { background: rgba(71, 85, 105, 0.12); color: #475569; border: 1px solid rgba(71, 85, 105, 0.18); }
+    .status-oficial { background: rgba(34, 197, 94, 0.18); color: #0b3b1f; border: 1px solid rgba(34, 197, 94, 0.25); }
+
+    .center-link-container {
+      text-align: center;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+
+    .center-link-btn {
+      display: inline-block;
+      padding: 16px 40px;
+      background: linear-gradient(45deg, #3b82f6, #2563eb);
+      color: white;
+      text-decoration: none;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.25s;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+    }
+
+    .center-link-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(59, 130, 246, 0.35);
+    }
+
+    .center-link-btn:active {
+      transform: translateY(0);
+    }
+
+    @media(max-width:640px) {
+      .btn {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+      }
+
+      .project-header > div:last-child {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+      }
+
+      .project-header > div:last-child .btn {
+        flex: 1;
+        margin: 0;
+      }
+
+      .actions-bar {
+        flex-direction: column;
+      }
+
+      .add-btn {
+        margin-left: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mis Proyectos Web</h1>
+    <p class="subtitle">Gestiona tus páginas web. Solo puedes hacer un cambio cada 24 horas.</p>
+    <div id="timeRemaining" class="message" style="display: none;"></div>
+    
+    <div class="actions-bar">
+      <a href="index.html" class="back-btn">← Volver</a>
+      <a href="index.html" class="add-btn">+ Agregar Nuevo Proyecto</a>
+    </div>
+
+    <div id="message"></div>
+    <div id="projectsList" class="projects-list"></div>
+    
+    <div class="center-link-container">
+      <a href="/" class="center-link-btn">Centro de Paginas Web</a>
+    </div>
+  </div>
+
+  <!-- Modal para editar -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h2>Editar Proyecto</h2>
+      <form id="editForm">
+        <div class="form-group">
+          <label>Título</label>
+          <input type="text" id="editTitle" required maxlength="20">
+        </div>
+        <div class="form-group">
+          <label>URL</label>
+          <input type="url" id="editUrl" required maxlength="57">
+        </div>
+        <div class="form-group">
+          <label>Tags (separados por coma)</label>
+          <input type="text" id="editTags" maxlength="150">
+        </div>
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea id="editDescription" maxlength="500"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Iniciales</label>
+          <input type="text" id="editInitials" maxlength="2">
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="editStatus">
+            <option value="activo">Activo</option>
+            
+            <option value="community">Community</option>
+            <option value="beta">Beta</option>
+            <option value="stable">Stable</option>
+            <option value="experimental">Experimental</option>
+            <option value="premium">Premium</option>
+            <option value="free">Free</option>
+            <option value="demo">Demo</option>
+            <option value="urgent">Urgent</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+        <div class="modal-buttons">
+          <button type="submit" class="btn-save">Guardar Cambios</button>
+          <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let myProjects = [];
+    let editingIndex = -1;
+    let currentUser = null;
+
+    function getCurrentUser() {
+      currentUser = localStorage.getItem('currentUser');
+      if (!currentUser) {
+        alert('⚠️ Debes iniciar sesión primero.');
+        window.location.href = '/Creator/index.html';
+        return null;
+      }
+      return currentUser;
+    }
+
+    function getUserProjects() {
+      const user = getCurrentUser();
+      if (!user) return [];
+      
+      const allUserProjects = JSON.parse(localStorage.getItem('user_projects') || '{}');
+      return allUserProjects[user] || [];
+    }
+
+    function saveUserProjects(projects) {
+      const user = getCurrentUser();
+      if (!user) return;
+      
+      const allUserProjects = JSON.parse(localStorage.getItem('user_projects') || '{}');
+      allUserProjects[user] = projects;
+      localStorage.setItem('user_projects', JSON.stringify(allUserProjects));
+    }
+
+    function showMessage(text, type = 'success') {
+      const msg = document.getElementById('message');
+      msg.textContent = text;
+      msg.className = `message ${type}`;
+      setTimeout(() => msg.className = 'message', 5000);
+    }
+
+    function getTimeRemaining() {
+      const user = getCurrentUser();
+      if (!user) return null;
+      
+      const lastEdit = localStorage.getItem(`lastEdit_${user}`);
+      if (!lastEdit) return null;
+      
+      const lastEditTime = new Date(lastEdit).getTime();
+      const currentTime = new Date().getTime();
+      const timePassed = currentTime - lastEditTime;
+      const twentyFourHours = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+      
+      if (timePassed >= twentyFourHours) {
+        return null; // Ya puede editar
+      }
+      
+      const timeRemaining = twentyFourHours - timePassed;
+      return timeRemaining;
+    }
+
+    function formatTimeRemaining(milliseconds) {
+      const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+      const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+      
+      return `${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    function updateTimeDisplay() {
+      const timeRemaining = getTimeRemaining();
+      const timeDiv = document.getElementById('timeRemaining');
+      
+      if (timeRemaining) {
+        timeDiv.textContent = `⏱️ Podrás editar en: ${formatTimeRemaining(timeRemaining)}`;
+        timeDiv.className = 'message error';
+        timeDiv.style.display = 'block';
+      } else {
+        timeDiv.style.display = 'none';
+      }
+    }
+
+    function canEditToday() {
+      return getTimeRemaining() === null;
+    }
+
+    function openEditModal(index) {
+      const timeRemaining = getTimeRemaining();
+      if (timeRemaining) {
+        showMessage(`Solo puedes hacer un cambio cada 24 horas. Podrás editar en: ${formatTimeRemaining(timeRemaining)}`, 'error');
+        return;
+      }
+      
+      editingIndex = index;
+      const project = myProjects[index];
+      
+      document.getElementById('editTitle').value = project.title || '';
+      document.getElementById('editUrl').value = project.url || '';
+      document.getElementById('editTags').value = Array.isArray(project.tags) ? project.tags.join(', ') : '';
+      document.getElementById('editDescription').value = project.description || '';
+      document.getElementById('editInitials').value = project.initials || '';
+      document.getElementById('editStatus').value = project.status || 'activo';
+      
+      document.getElementById('editModal').classList.add('show');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('show');
+      editingIndex = -1;
+    }
+
+    async function deleteProject(index) {
+      if (!confirm('¿Estás seguro de eliminar este proyecto?')) return;
+      
+      const projectToDelete = myProjects[index];
+      myProjects.splice(index, 1);
+      saveUserProjects(myProjects);
+
+      // Si el proyecto estaba sincronizado, eliminarlo de la API
+      if (projectToDelete.synced) {
+        try {
+          const resp = await fetch(`https://api.jsonbin.io/v3/b/68af329cae596e708fd92637/latest`, { cache: 'no-store' });
+          if (resp.ok) {
+            const raw = await resp.json();
+            const currentProjects = raw.record?.projects || [];
+            const meta = raw.record?.meta || {};
+            
+            const updatedProjects = currentProjects.filter(p => p.id !== projectToDelete.id);
+            meta.projects_count = updatedProjects.length;
+            meta.updated = new Date().toISOString();
+            
+            await fetch(`https://api.jsonbin.io/v3/b/68af329cae596e708fd92637`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Access-Key': '$2a$10$IbCel6X/gSLaMz/uH3pPdeZbyKT6nzBvjc/U7Bi9ToIg8zWuqxIQy',
+                'X-Bin-Versioning': 'false'
+              },
+              body: JSON.stringify({ meta, projects: updatedProjects })
+            });
+            
+            showMessage('Proyecto eliminado de la API y localmente.', 'success');
+          }
+        } catch (err) {
+          showMessage('Proyecto eliminado localmente. Error al sincronizar: ' + err.message, 'error');
+        }
+      } else {
+        showMessage('Proyecto eliminado localmente.', 'success');
+      }
+      
+      loadProjects();
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (editingIndex === -1) return;
+      
+      const user = getCurrentUser();
+      const tags = document.getElementById('editTags').value.split(',').map(t => t.trim()).filter(Boolean);
+      const wasSynced = myProjects[editingIndex].synced;
+      
+      myProjects[editingIndex] = {
+        ...myProjects[editingIndex],
+        title: document.getElementById('editTitle').value.trim(),
+        url: document.getElementById('editUrl').value.trim(),
+        tags: tags,
+        description: document.getElementById('editDescription').value.trim(),
+        initials: document.getElementById('editInitials').value.trim().toUpperCase() || myProjects[editingIndex].initials,
+        status: document.getElementById('editStatus').value,
+        synced: false
+      };
+      
+      saveUserProjects(myProjects);
+      localStorage.setItem(`lastEdit_${user}`, new Date().toISOString());
+
+      // Si estaba sincronizado, actualizar en la API
+      if (wasSynced) {
+        try {
+          const resp = await fetch(`https://api.jsonbin.io/v3/b/68af329cae596e708fd92637/latest`, { cache: 'no-store' });
+          if (resp.ok) {
+            const raw = await resp.json();
+            const currentProjects = raw.record?.projects || [];
+            const meta = raw.record?.meta || {};
+            
+            const projectIndex = currentProjects.findIndex(p => p.id === myProjects[editingIndex].id);
+            if (projectIndex !== -1) {
+              currentProjects[projectIndex] = {
+                id: myProjects[editingIndex].id,
+                title: myProjects[editingIndex].title,
+                url: myProjects[editingIndex].url,
+                tags: myProjects[editingIndex].tags,
+                initials: myProjects[editingIndex].initials,
+                status: myProjects[editingIndex].status,
+                description: myProjects[editingIndex].description,
+                dateAdded: myProjects[editingIndex].dateAdded
+              };
+              
+              meta.updated = new Date().toISOString();
+              
+              await fetch(`https://api.jsonbin.io/v3/b/68af329cae596e708fd92637`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-Access-Key': '$2a$10$IbCel6X/gSLaMz/uH3pPdeZbyKT6nzBvjc/U7Bi9ToIg8zWuqxIQy',
+                  'X-Bin-Versioning': 'false'
+                },
+                body: JSON.stringify({ meta, projects: currentProjects })
+              });
+              
+              myProjects[editingIndex].synced = true;
+              saveUserProjects(myProjects);
+              showMessage('Proyecto actualizado en la API y localmente.', 'success');
+            }
+          }
+        } catch (err) {
+          showMessage('Proyecto actualizado localmente. Error al sincronizar: ' + err.message, 'error');
+        }
+      } else {
+        showMessage('Proyecto actualizado localmente. Recuerda sincronizar con la API.', 'success');
+      }
+      
+      closeEditModal();
+      loadProjects();
+    });
+
+    function loadProjects() {
+      myProjects = getUserProjects();
+      
+      const container = document.getElementById('projectsList');
+      container.innerHTML = '';
+      
+      // Actualizar display de tiempo restante
+      updateTimeDisplay();
+      
+      if (myProjects.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h3>No tienes proyectos aún</h3>
+            <p>Agrega tu primer proyecto web para comenzar</p>
+          </div>
+        `;
+        return;
+      }
+      
+      myProjects.forEach((project, index) => {
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        
+        const tags = Array.isArray(project.tags) ? project.tags : [];
+        const tagsHtml = tags.map(t => `<span class="tag">${t}</span>`).join('');
+        
+        card.innerHTML = `
+          <div class="project-header">
+            <div>
+              <div class="project-title">${project.title || 'Sin título'}</div>
+              <div class="project-url">${project.url || ''}</div>
+              <div class="project-description">${project.description || 'Sin descripción'}</div>
+              <div class="project-tags">${tagsHtml || '<span class="tag">Sin tags</span>'}</div>
+              <span class="status-badge status-${project.status || 'activo'}">${(project.status || 'activo').toUpperCase()}</span>
+              <div class="project-meta">Iniciales: ${project.initials || '--'} | Creado: ${project.dateAdded ? new Date(project.dateAdded).toLocaleDateString() : 'N/A'}</div>
+            </div>
+            <div>
+              <button class="btn btn-edit" onclick="openEditModal(${index})">Editar</button>
+              <button class="btn btn-delete" onclick="deleteProject(${index})">Eliminar</button>
+            </div>
+          </div>
+        `;
+        
+        container.appendChild(card);
+      });
+    }
+
+    async function syncWithAPI() {
+      const pendingProjects = myProjects.filter(p => !p.synced);
+      
+      if (pendingProjects.length === 0) {
+        showMessage('No hay cambios pendientes para sincronizar.', 'success');
+        return;
+      }
+
+      const syncBtn = document.getElementById('syncBtn');
+      syncBtn.disabled = true;
+      showMessage('Sincronizando con la API...', 'success');
+
+      try {
+        // Obtener el bin actual
+        const resp = await fetch(`https://api.jsonbin.io/v3/b/68af329cae596e708fd92637/latest`, { cache: 'no-store' });
+        if (!resp.ok) throw new Error('Error al obtener proyectos de la API');
+        const raw = await resp.json();
+        
+        const currentProjects = raw.record?.projects || [];
+        const meta = raw.record?.meta || {};
+
+        // Agregar proyectos pendientes que no existan ya
+        for (const project of pendingProjects) {
+          const exists = currentProjects.some(p => 
+            (p.title || '').toLowerCase() === project.title.toLowerCase() || 
+            (p.url || '').toLowerCase() === project.url.toLowerCase()
+          );
+          
+          if (!exists) {
+            const apiProject = {
+              id: project.id,
+              title: project.title,
+              url: project.url,
+              tags: project.tags,
+              initials: project.initials,
+              status: project.status,
+              description: project.description,
+              dateAdded: project.dateAdded
+            };
+            currentProjects.push(apiProject);
+          }
+        }
+
+        // Actualizar meta
+        meta.projects_count = currentProjects.length;
+        meta.updated = new Date().toISOString();
+
+        // Guardar en la API
+        const putResp = await fetch(`https://api.jsonbin.io/v3/b/68af329cae596e708fd92637`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Access-Key': '$2a$10$IbCel6X/gSLaMz/uH3pPdeZbyKT6nzBvjc/U7Bi9ToIg8zWuqxIQy',
+            'X-Bin-Versioning': 'false'
+          },
+          body: JSON.stringify({ meta, projects: currentProjects })
+        });
+
+        if (!putResp.ok) throw new Error('Error al sincronizar');
+
+        // Marcar proyectos como sincronizados
+        myProjects.forEach(p => p.synced = true);
+        saveUserProjects(myProjects);
+
+        showMessage('¡Proyectos sincronizados exitosamente! ✅', 'success');
+        loadProjects();
+      } catch (err) {
+        showMessage('Error al sincronizar: ' + err.message, 'error');
+      } finally {
+        syncBtn.disabled = false;
+      }
+    }
+
+    if (getCurrentUser()) {
+      loadProjects();
+      
+      // Actualizar el contador cada segundo
+      setInterval(() => {
+        updateTimeDisplay();
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
