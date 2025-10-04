@@ -1,0 +1,190 @@
+/* Estilos para el sistema de reseñas y estrellas */
+.project-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.stars-container {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.star-filled {
+  color: #facc15;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.star-half {
+  color: #facc15;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.star-empty {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.rating-text {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+/* Sección de reseñas en el panel */
+.reviews-section {
+  margin-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 16px;
+}
+
+.reviews-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.review-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.review-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.review-user {
+  font-weight: 600;
+  color: #facc15;
+  font-size: 0.95rem;
+}
+
+.review-date {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.review-stars {
+  margin: 6px 0;
+}
+
+.review-comment {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+  font-size: 0.95rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.no-reviews {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  padding: 20px;
+}
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 768px) {
+  .project-rating {
+    gap: 6px;
+  }
+
+  .reviews-title {
+    font-size: 1rem;
+    gap: 6px;
+  }
+
+  .review-item {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .review-header {
+    gap: 6px;
+  }
+
+  .review-user {
+    font-size: 0.9rem;
+  }
+
+  .review-date {
+    font-size: 0.8rem;
+  }
+
+  .review-comment {
+    font-size: 0.9rem;
+  }
+
+  .rating-text {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-rating {
+    gap: 5px;
+  }
+
+  .star-filled,
+  .star-half,
+  .star-empty {
+    font-size: 0.9rem;
+  }
+
+  .reviews-title {
+    font-size: 0.95rem;
+  }
+
+  .review-item {
+    padding: 12px;
+  }
+
+  .review-user {
+    font-size: 0.85rem;
+  }
+
+  .review-date {
+    font-size: 0.75rem;
+  }
+
+  .review-comment {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .rating-text {
+    font-size: 0.8rem;
+  }
+
+  .no-reviews {
+    padding: 15px;
+    font-size: 0.9rem;
+  }
+}

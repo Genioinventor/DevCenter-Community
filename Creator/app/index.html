@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DevCenter Addon</title>
+  <script src="../../bin-config.js"></script>
+  <style>
+    /* ================ Layout / UI (mantengo tu diseño) ================ */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0a18 0%, #1a1a2e 50%, #16213e 100%);
+      color: #fff;
+      padding: 20px;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(250, 204, 21, 0.08), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(34, 197, 94, 0.08), transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(59, 130, 246, 0.08), transparent);
+      background-size: 150px 150px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1
+    }
+
+    h1 {
+      color: #facc15;
+      text-align: center;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      margin-bottom: 2.5rem;
+      text-shadow: 0 0 25px rgba(250, 204, 21, 0.5);
+      background: linear-gradient(45deg, #facc15, #fde047);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.4));
+      letter-spacing: -0.5px;
+      font-weight: 800;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(250, 204, 21, 0.25);
+      padding: clamp(1.5rem, 4vw, 2.8rem);
+      border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      position: relative;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media(min-width:980px) {
+      .form-grid {
+        grid-template-columns: 1fr 360px;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 1.4rem;
+      position: relative
+    }
+
+    label {
+      display: block;
+      margin-bottom: .7rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      font-size: .9rem;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4)
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 1.1rem 1.3rem;
+      background: rgba(255, 255, 255, 0.09);
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      color: #fff;
+      font-size: 1rem;
+      transition: all .25s cubic-bezier(.4, 0, .2, 1);
+      backdrop-filter: blur(8px);
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #facc15;
+      background: rgba(255, 255, 255, 0.13);
+      box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.18), 0 6px 20px rgba(0, 0, 0, 0.3);
+      transform: translateY(-1px);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.5)
+    }
+
+    select {
+      cursor: pointer
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: .6rem;
+      margin-top: .6rem
+    }
+
+    .status-option {
+      padding: .7rem .9rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      cursor: pointer;
+      transition: all .2s ease;
+      border: 2px solid;
+      text-align: center;
+      display: block;
+    }
+
+    .status-option:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.1);
+    }
+
+    .status-option.selected {
+      transform: scale(1.03);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    #hiddenStatus {
+      display: none
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: linear-gradient(45deg, #22c55e, #16a34a);
+      border: none;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      transition: all .25s;
+      box-shadow: 0 10px 30px rgba(34, 197, 94, 0.28);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(34, 197, 94, 0.38);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      padding: 1.1rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.98rem;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      transition: all .25s;
+      opacity: 0;
+      transform: translateY(12px)
+    }
+
+    .message.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .message.success {
+      background: linear-gradient(45deg, rgba(34, 197, 94, 0.15), rgba(22, 163, 74, 0.15));
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      color: #4ade80;
+      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.18)
+    }
+
+    .message.error {
+      background: linear-gradient(45deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15));
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #f87171;
+      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.18)
+    }
+
+    .message.loading {
+      background: linear-gradient(45deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.15));
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      color: #60a5fa;
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.18)
+    }
+
+    .loading-dots::after {
+      content: '';
+      animation: dots 2s infinite
+    }
+
+    @keyframes dots {
+
+      0%,
+      20% {
+        content: ''
+      }
+
+      40% {
+        content: '.'
+      }
+
+      60% {
+        content: '..'
+      }
+
+      80%,
+      100% {
+        content: '...'
+      }
+    }
+
+    .preview-container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(250, 204, 21, 0.18);
+      padding: 1.2rem;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all .25s;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .preview-container.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .preview-title {
+      color: #facc15;
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: .8rem;
+      text-align: center
+    }
+
+    .preview-card {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 1.2rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .preview-card h3 {
+      color: #fff;
+      margin-bottom: .4rem;
+      font-size: 1.05rem
+    }
+
+    .preview-card .url {
+      color: #60a5fa;
+      font-size: .88rem;
+      margin-bottom: .6rem;
+      word-break: break-all
+    }
+
+    .preview-card .description {
+      color: #cbd5e1;
+      font-size: 0.92rem;
+      margin-bottom: .6rem
+    }
+
+    /* <--- añadido para mostrar la descripción */
+    .preview-card .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-bottom: .6rem
+    }
+
+    .preview-card .tag {
+      background: rgba(59, 130, 246, 0.14);
+      color: #60a5fa;
+      padding: .28rem .6rem;
+      border-radius: 12px;
+      font-size: .78rem;
+      border: 1px solid rgba(59, 130, 246, 0.18)
+    }
+
+    .preview-card .status-badge {
+      display: inline-block;
+      padding: .34rem .65rem;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .45px
+    }
+
+    .preview-card .initials {
+      float: right;
+      background: rgba(250, 204, 21, 0.14);
+      color: #facc15;
+      padding: .3rem .6rem;
+      border-radius: 50%;
+      font-weight: 800;
+      font-size: .78rem;
+      border: 1px solid rgba(250, 204, 21, 0.18)
+    }
+
+    @media(max-width:768px) {
+      body {
+        padding: 15px;
+      }
+      
+      .container {
+        padding: 0 10px;
+      }
+      
+      h1 {
+        font-size: clamp(1.75rem, 5vw, 2.4rem);
+        margin-bottom: 2rem;
+      }
+      
+      .form-container {
+        padding: clamp(1.25rem, 4vw, 2rem);
+      }
+      
+      input, textarea, select {
+        padding: 1rem;
+        font-size: 16px; /* Prevent zoom on iOS */
+      }
+      
+      .status-grid {
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 0.5rem;
+      }
+      
+      .status-option {
+        font-size: .8rem;
+        padding: .65rem .8rem;
+      }
+      
+      .submit-btn {
+        padding: 1rem;
+        font-size: 0.95rem;
+      }
+    }
+    
+    @media(max-width:640px) {
+      body {
+        padding: 12px;
+      }
+      
+      h1 {
+        font-size: clamp(1.5rem, 5vw, 2rem);
+        margin-bottom: 1.5rem;
+      }
+      
+      .form-grid {
+        gap: 20px;
+      }
+      
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+      
+      label {
+        font-size: 0.85rem;
+      }
+      
+      input, textarea {
+        padding: 0.9rem 1rem;
+      }
+      
+      .status-grid {
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        gap: 0.45rem;
+      }
+
+      .status-option {
+        font-size: .72rem;
+        padding: .55rem .65rem;
+      }
+      
+      .preview-card h3 {
+        font-size: 1rem;
+      }
+      
+      .preview-card .url {
+        font-size: 0.85rem;
+      }
+    }
+    
+    @media(max-width:480px) {
+      body {
+        padding: 10px;
+      }
+      
+      .form-container {
+        padding: 1rem;
+        border-radius: 18px;
+      }
+      
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      
+      .message {
+        font-size: 0.9rem;
+        padding: 1rem;
+      }
+    }
+
+    /* ================ Status styles (mantengo muchas, pero la UI solo mostrará las 10 que pediste) ================ */
+    .status-activo {
+      background: rgba(34, 197, 94, 0.15);
+      color: #047857;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+    }
+
+    .status-oficial {
+      background: rgba(34, 197, 94, 0.18);
+      color: #0b3b1f;
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+
+    .status-community {
+      background: rgba(99, 102, 241, 0.14);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .status-beta {
+      background: rgba(251, 191, 36, 0.18);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.25);
+    }
+
+    .status-stable {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.18);
+    }
+
+    .status-experimental {
+      background: rgba(236, 72, 153, 0.14);
+      color: #ec4899;
+      border: 1px solid rgba(236, 72, 153, 0.2);
+    }
+
+    .status-premium {
+      background: rgba(217, 119, 6, 0.14);
+      color: #d97706;
+      border: 1px solid rgba(217, 119, 6, 0.2);
+    }
+
+    .status-free {
+      background: rgba(34, 197, 94, 0.12);
+      color: #16a34a;
+      border: 1px solid rgba(34, 197, 94, 0.18);
+    }
+
+    .status-demo {
+      background: rgba(2, 132, 199, 0.14);
+      color: #0284c7;
+      border: 1px solid rgba(2, 132, 199, 0.2);
+    }
+
+    .status-urgent {
+      background: rgba(239, 68, 68, 0.14);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .status-archived {
+      background: rgba(71, 85, 105, 0.12);
+      color: #475569;
+      border: 1px solid rgba(71, 85, 105, 0.18);
+    }
+
+    /* small helper style for cooldown display */
+    #cooldownDisplay {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      font-weight: 700;
+      text-align: center
+    }
+  </style>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <body>
+    <script>
+      // Verificar si el usuario está logueado
+      (function() {
+        const currentUser = localStorage.getItem('currentUser');
+        const authToken = localStorage.getItem('authToken');
+        
+        if (!currentUser || !authToken) {
+          alert('⚠️ Debes iniciar sesión para acceder a esta página.');
+          window.location.href = '/Creator/index.html';
+        }
+      })();
+    </script>
+
+    <div class="container">
+      <h1>Agregar Proyecto a DevCenter</h1>
+
+      <div class="form-container">
+        <div class="form-grid">
+          <form id="projectForm" autocomplete="off" novalidate>
+            <div class="form-group">
+              <label for="title">Título del Proyecto</label>
+              <input id="title" type="text" placeholder="Mi Increíble Proyecto" required maxlength="20" />
+            </div>
+
+            <div class="form-group">
+              <label for="url">URL del Proyecto</label>
+              <input id="url" type="url" placeholder="https://mi-proyecto.netlify.app" required maxlength="57" />
+            </div>
+
+            <div class="form-group">
+              <label for="tags">Tags (separados por coma)</label>
+              <input id="tags" type="text" placeholder="Ej: Portfolio, Blog, Tienda Online" maxlength="150" />
+            </div>
+
+            <!-- === DESCRIPCIÓN: agregado === -->
+            <div class="form-group">
+              <label for="description">Descripción</label>
+              <textarea id="description" placeholder="Breve descripción del proyecto (máx. 500 caracteres)"
+                maxlength="500"></textarea>
+            </div>
+            <!-- ============================= -->
+
+            <div class="form-group">
+              <label for="initials">Iniciales</label>
+              <input id="initials" type="text" maxlength="2" placeholder="DW" />
+            </div>
+
+            <div class="form-group">
+              <label>Estado del Proyecto</label>
+              <input id="hiddenStatus" type="hidden" value="activo" />
+              <div class="status-grid" id="statusGrid">
+                <!-- SOLO los 10 estados permitidos -->
+                <div class="status-option status-activo selected" data-status="activo">Activo</div>
+
+                <div class="status-option status-community" data-status="community">Community</div>
+                <div class="status-option status-beta" data-status="beta">Beta</div>
+                <div class="status-option status-stable" data-status="stable">Stable</div>
+                <div class="status-option status-experimental" data-status="experimental">Experimental</div>
+                <div class="status-option status-premium" data-status="premium">Premium</div>
+                <div class="status-option status-free" data-status="free">Free</div>
+                <div class="status-option status-demo" data-status="demo">Demo</div>
+                <div class="status-option status-urgent" data-status="urgent">Urgent</div>
+                <div class="status-option status-archived" data-status="archived">Archived</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;flex-direction:column;">
+              <button type="submit" class="submit-btn" id="submitBtn">Agregar Proyecto</button>
+              <div id="cooldownDisplay">Comprobando permiso para añadir...</div>
+            </div>
+          </form>
+
+          <!-- Right column: Preview + actions -->
+          <div>
+            <div class="preview-container" id="previewContainer">
+              <div class="preview-title">Vista Previa del Proyecto</div>
+              <div class="preview-card">
+                <div class="initials" id="previewInitials">--</div>
+                <h3 id="previewTitle">Título del proyecto</h3>
+                <div class="url" id="previewUrl">https://mi-proyecto.netlify.app</div>
+                <div class="description" id="previewDescription">Descripción del proyecto...</div>
+                <div class="tags" id="previewTags"><span class="tag">ejemplo</span></div>
+                <span class="status-badge status-oficial" id="previewStatus">activo</span>
+                <!-- Botón eliminar proyecto (solo visible si hay coincidencia en preview) -->
+              </div>
+            </div>
+
+            <div style="margin-top:14px;display:grid;gap:10px;grid-template-columns:1fr 1fr;">
+              <a id="goDev" href="/" rel="noopener"
+                class="submit-btn"
+                style="text-align:center;background:linear-gradient(45deg,#667eea,#764ba2);box-shadow:0 8px 25px rgba(118,75,162,0.25);">Abrir
+                DevCenter</a>
+              <a id="myProjectsBtn" href="my-projects.html" class="submit-btn" style="display:none;text-align:center;background:linear-gradient(45deg,#22c55e,#16a34a);box-shadow:0 8px 25px rgba(34,197,94,0.25);">Gestionar Mis Proyectos</a>
+              <a id="adminBtn" href="admin.html" class="submit-btn" style="display:none;text-align:center;background:linear-gradient(45deg,#ef4444,#dc2626);box-shadow:0 8px 25px rgba(239,68,68,0.25);">Gestión de Proyectos</a>
+            </div>
+
+            <div id="message" class="message" style="margin-top:12px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal editor (invisible hasta presionas 'q' minúscula) -->
+    <div id="jsonModal"
+      style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;z-index:9999;padding:20px;">
+      <div
+        style="max-width:1100px;width:100%;background:#0b0b0b;border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+          <h3 style="margin:0;color:#facc15;">Editor JSON (secreto)</h3>
+          <div style="margin-left:auto;color:#9ca3af;font-size:0.9rem;">Bin: <code id="binIdDisplay"
+              style="background:transparent;color:#60a5fa;">68af329cae596e708fd92637</code></div>
+        </div>
+        <textarea id="jsonEditor" spellcheck="false"
+          style="width:100%;height:420px;padding:12px;border-radius:8px;background:#050507;color:#e6eef8;border:1px solid rgba(255,255,255,0.04);font-family:monospace;font-size:13px;line-height:1.4;"></textarea>
+        <div style="display:flex;gap:10px;margin-top:12px;">
+          <button id="saveJsonBtn" class="submit-btn" style="flex:0 0 140px;">Guardar JSON</button>
+          <button id="closeJsonBtn" class="submit-btn"
+            style="flex:0 0 120px;background:linear-gradient(45deg,#ef4444,#dc2626);">Cancelar</button>
+          <div id="jsonModalMsg" style="margin-left:auto;align-self:center;color:#9ca3af;"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* ===== CONFIG ===== */
+      const USE_JSONBIN = true;
+      const BIN_ID = window.BIN_CONFIG?.PROJECTS_BIN_ID || "68af329cae596e708fd92637";
+      const ACCESS_KEY = "$2a$10$IbCel6X/gSLaMz/uH3pPdeZbyKT6nzBvjc/U7Bi9ToIg8zWuqxIQy";
+      const LOCAL_JSON_PATH = "./Dev-Center-all/DevCenter.json";
+      const COOLDOWN_MS = 10 * 24 * 60 * 60 * 1000;
+      const LOCAL_KEY = 'dc_last_add_ts';
+      const OVERRIDE_KEY = 'dc_override_active';
+      const MAX_PROJECTS_PER_USER = 10;
+
+      /* ===== DOM ===== */
+      const form = document.getElementById('projectForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const messageBox = document.getElementById('message');
+      const cooldownDisplay = document.getElementById('cooldownDisplay');
+
+      const titleInput = document.getElementById('title');
+      const urlInput = document.getElementById('url');
+      const tagsInput = document.getElementById('tags');
+      const initialsInput = document.getElementById('initials');
+      const hiddenStatus = document.getElementById('hiddenStatus');
+
+      /* === description DOM (nuevo) === */
+      const descriptionInput = document.getElementById('description');
+      /* =============================== */
+
+      const previewContainer = document.getElementById('previewContainer');
+      const previewTitle = document.getElementById('previewTitle');
+      const previewUrl = document.getElementById('previewUrl');
+      const previewTags = document.getElementById('previewTags');
+      const previewInitials = document.getElementById('previewInitials');
+      const previewStatus = document.getElementById('previewStatus');
+
+      /* === preview descripción (nuevo) === */
+      const previewDescription = document.getElementById('previewDescription');
+      /* =================================== */
+
+
+      let statusOptions = Array.from(document.querySelectorAll('.status-option'));
+
+      /* JSON editor modal */
+      const jsonModal = document.getElementById('jsonModal');
+      const jsonEditor = document.getElementById('jsonEditor');
+      const saveJsonBtn = document.getElementById('saveJsonBtn');
+      const closeJsonBtn = document.getElementById('closeJsonBtn');
+      const jsonModalMsg = document.getElementById('jsonModalMsg');
+      const binIdDisplay = document.getElementById('binIdDisplay');
+      if (binIdDisplay) binIdDisplay.textContent = BIN_ID;
+
+      /* ===== UTIL ===== */
+      function showMessage(html, type = 'loading') {
+        messageBox.innerHTML = html;
+        messageBox.className = `message ${type} show`;
+        if (type !== 'loading') {
+          setTimeout(() => messageBox.classList.remove('show'), 5000);
+        }
+      }
+
+      function isValidHttpUrl(string) {
+        try { const u = new URL(string); return u.protocol === 'http:' || u.protocol === 'https:'; } catch { return false; }
+      }
+
+      function getLastLocalTs() { const v = localStorage.getItem(LOCAL_KEY); return v ? Number(v) : 0; }
+      function setLastLocalTs(ts = Date.now()) { localStorage.setItem(LOCAL_KEY, String(ts)); }
+      function clearLastLocalTs() { localStorage.removeItem(LOCAL_KEY); }
+
+      function isOverrideActive() { return sessionStorage.getItem(OVERRIDE_KEY) === '1'; }
+      function setOverrideActive() { sessionStorage.setItem(OVERRIDE_KEY, '1'); }
+
+      /* returns remaining ms or 0 */
+      function cooldownRemainingMs() {
+        const last = getLastLocalTs();
+        if (!last) return 0;
+        const elapsed = Date.now() - last;
+        const rem = COOLDOWN_MS - elapsed;
+        return rem > 0 ? rem : 0;
+      }
+      function formatRemaining(ms) {
+        if (ms <= 0) return '0s';
+        const s = Math.floor(ms / 1000);
+        const days = Math.floor(s / 86400);
+        const hours = Math.floor((s % 86400) / 3600);
+        const mins = Math.floor((s % 3600) / 60);
+        const sec = s % 60;
+        return (days ? days + 'd ' : '') + (hours ? hours + 'h ' : '') + (mins ? mins + 'm ' : '') + sec + 's';
+      }
+
+      /* updateCooldownUI ahora actualiza un elemento persistente (cooldownDisplay)
+         y habilita/deshabilita el botón de envío. */
+      function updateCooldownUI() {
+        const rem = cooldownRemainingMs();
+        if (rem > 0 && !isOverrideActive()) {
+          submitBtn.disabled = true;
+          cooldownDisplay.textContent = `Debes esperar ${formatRemaining(rem)} para agregar otro proyecto.`;
+        } else {
+          submitBtn.disabled = false;
+          cooldownDisplay.textContent = `Puedes crear tu página.`;
+        }
+      }
+
+      /* run updateCooldownUI every second for live countdown */
+      setInterval(updateCooldownUI, 1000);
+
+      /* ===== API ===== */
+      async function getBinRaw() {
+        if (USE_JSONBIN) {
+          const resp = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { cache: 'no-store' });
+          if (!resp.ok) throw new Error('GET failed: ' + resp.status);
+          return await resp.json();
+        } else {
+          const resp = await fetch(LOCAL_JSON_PATH + '?t=' + Date.now(), { cache: 'no-store' });
+          if (!resp.ok) throw new Error('GET local failed: ' + resp.status);
+          return await resp.json();
+        }
+      }
+      async function getProjects() {
+        const data = await getBinRaw();
+        return data.record?.projects || data.projects || [];
+      }
+      async function putBin(bodyObj) {
+        if (USE_JSONBIN) {
+          const resp = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Access-Key': ACCESS_KEY,
+              'X-Bin-Versioning': 'false'
+            },
+            body: JSON.stringify(bodyObj)
+          });
+          if (!resp.ok) {
+            const txt = await resp.text().catch(() => null);
+            throw new Error('PUT failed ' + resp.status + ' ' + (txt || ''));
+          }
+          return await resp.json();
+        } else {
+          showMessage('Guardado local no soportado en navegador. Cambia a JSONBin para guardar.', 'error');
+          throw new Error('Guardado local no soportado');
+        }
+      }
+
+      function getCurrentUsername() {
+        const userStr = localStorage.getItem('currentUser');
+        if (!userStr) return null;
+        try {
+          const userData = JSON.parse(userStr);
+          return userData.username || userData.usuario || userStr;
+        } catch {
+          return userStr;
+        }
+      }
+
+      /* ===== UI: preview & status selection ===== */
+      function refreshStatusOptions() {
+        statusOptions = Array.from(document.querySelectorAll('.status-option'));
+        statusOptions.forEach(opt => {
+          opt.addEventListener('click', () => {
+            statusOptions.forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+            hiddenStatus.value = opt.dataset.status;
+            updatePreview();
+          });
+        });
+      }
+      refreshStatusOptions();
+
+      function updatePreview() {
+        const title = titleInput.value.trim() || 'Título del proyecto';
+        const url = urlInput.value.trim() || 'https://ejemplo.netlify.app';
+        const tags = tagsInput.value.trim();
+        const initials = (initialsInput.value.trim() || '--').slice(0, 2).toUpperCase();
+        const status = hiddenStatus.value || 'oficial';
+        /* === descripción en preview (nuevo) === */
+        const description = (descriptionInput.value.trim() || 'Descripción del proyecto...');
+        /* ===================================== */
+        previewTitle.textContent = title;
+        previewUrl.textContent = url;
+        previewInitials.textContent = initials;
+        previewTags.innerHTML = '';
+        const tagArray = tags.split(',').map(t => t.trim()).filter(Boolean);
+        if (tagArray.length === 0) {
+          const el = document.createElement('span'); el.className = 'tag'; el.textContent = 'Tags..'; previewTags.appendChild(el);
+        } else {
+          tagArray.forEach(t => { const el = document.createElement('span'); el.className = 'tag'; el.textContent = t; previewTags.appendChild(el); });
+        }
+        // handle status class for preview
+        previewStatus.className = `status-badge status-${status}`;
+        previewStatus.textContent = status.toUpperCase();
+
+        /* set preview description (nuevo) */
+        previewDescription.textContent = description;
+
+        // Detectar código especial para acceso admin
+        const adminBtn = document.getElementById("adminBtn");
+        if (title === "DevCenter=code" && url === "DevCenter=code" && tags === "DevCenter=code" && description === "DevCenter=code" && status === "urgent") {
+          if (adminBtn) adminBtn.style.display = "block";
+        } else {
+          if (adminBtn) adminBtn.style.display = "none";
+        }
+
+        if (title !== 'Título del proyecto' || url !== 'https://ejemplo.netlify.app' || description !== 'Descripción del proyecto...') previewContainer.classList.add('show'); else previewContainer.classList.remove('show');
+      }
+      titleInput.addEventListener('input', updatePreview);
+      urlInput.addEventListener('input', updatePreview);
+      tagsInput.addEventListener('input', updatePreview);
+      initialsInput.addEventListener('input', updatePreview);
+      /* === nuevo listener para description === */
+      descriptionInput.addEventListener('input', updatePreview);
+      /* ======================================= */
+
+
+
+      /* ===== Form submit ===== */
+      form.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+
+        const rem = cooldownRemainingMs();
+        if (rem > 0 && !isOverrideActive()) {
+          showMessage(`Aún debes esperar ${formatRemaining(rem)} para agregar otro proyecto.`, 'error');
+          return;
+        }
+
+        const title = titleInput.value.trim();
+        const url = urlInput.value.trim();
+        const tags = tagsInput.value.split(',').map(t => t.trim()).filter(Boolean);
+        const initials = (initialsInput.value.trim() || '').slice(0, 2).toUpperCase() || title.slice(0, 2).toUpperCase();
+        const status = hiddenStatus.value || 'oficial';
+        const description = descriptionInput.value.trim() || '';
+
+        if (!title) { showMessage('El título es obligatorio.', 'error'); return; }
+
+        if (!url || !isValidHttpUrl(url)) {
+          showMessage('Introduce una URL válida.', 'error');
+          return;
+        }
+
+        if (!url.includes(".netlify.app")) {
+          showMessage("La URL debe contener .netlify.app", "error");
+          return;
+        }
+
+        submitBtn.disabled = true;
+        showMessage('Agregando proyecto a la API<span class="loading-dots"></span>', 'loading');
+
+        try {
+          const username = getCurrentUsername();
+          if (!username) {
+            showMessage('Error: Usuario no identificado. Inicia sesión nuevamente.', 'error');
+            submitBtn.disabled = false;
+            return;
+          }
+
+          const raw = await getBinRaw();
+          const current = raw.record?.projects || [];
+          
+          const userProjects = current.filter(p => p.owner === username);
+          if (userProjects.length >= MAX_PROJECTS_PER_USER) {
+            showMessage(`Has alcanzado el límite de ${MAX_PROJECTS_PER_USER} proyectos. No puedes agregar más.`, 'error');
+            submitBtn.disabled = false;
+            return;
+          }
+          const meta = raw.record?.meta || {};
+
+          const exists = current.some(p => (p.title || '').toLowerCase() === title.toLowerCase() || (p.url || '').toLowerCase() === url.toLowerCase());
+          if (exists) {
+            showMessage('Ya existe un proyecto con ese título o URL.', 'error');
+            submitBtn.disabled = false;
+            return;
+          }
+
+          const newProject = {
+            id: `proj-${Date.now()}`,
+            title,
+            url,
+            tags,
+            initials,
+            status,
+            description,
+            dateAdded: new Date().toISOString(),
+            owner: username
+          };
+
+          const updated = [...current, newProject];
+
+          meta.projects_count = updated.length;
+          meta.updated = new Date().toISOString();
+
+          await putBin({
+            meta,
+            projects: updated
+          });
+
+
+          const currentUser = localStorage.getItem('currentUser');
+          if (currentUser) {
+            const allUserProjects = JSON.parse(localStorage.getItem('user_projects') || '{}');
+            const userProjects = allUserProjects[currentUser] || [];
+            userProjects.push({...newProject, owner: currentUser, synced: true});
+            allUserProjects[currentUser] = userProjects;
+            localStorage.setItem('user_projects', JSON.stringify(allUserProjects));
+          }
+
+          setLastLocalTs();
+
+          showMessage('¡Proyecto agregado con éxito a ambos bins! ✅', 'success');
+          
+          setTimeout(() => {
+            window.location.href = 'my-projects.html';
+          }, 1500);
+
+          form.reset();
+          hiddenStatus.value = 'oficial';
+          statusOptions.forEach(o => o.classList.remove('selected'));
+          document.querySelector('.status-option.status-oficial')?.classList.add('selected');
+          previewContainer.classList.remove('show');
+          updateCooldownUI();
+        } catch (err) {
+          console.error('submit error', err);
+          showMessage('Error al agregar proyecto: ' + (err.message || err), 'error');
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+      /* ===== Verificar si el usuario tiene proyectos y mostrar botón ===== */
+      async function checkUserProjects() {
+        const username = getCurrentUsername();
+        if (!username) return;
+        
+        try {
+          const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+            cache: "no-store"
+          });
+          
+          if (!response.ok) {
+            console.error('Error al cargar proyectos del bin');
+            return;
+          }
+          
+          const data = await response.json();
+          const allProjects = data.record?.projects || [];
+          
+          const userProjects = allProjects.filter(project => {
+            return project.owner && project.owner === username;
+          });
+          
+          const myProjectsBtn = document.getElementById('myProjectsBtn');
+          if (userProjects.length > 0 && myProjectsBtn) {
+            myProjectsBtn.style.display = 'block';
+          }
+        } catch (error) {
+          console.error('Error verificando proyectos del usuario:', error);
+          console.error('Detalles del error:', error.message, error.stack);
+        }
+      }
+
+      /* ===== init ===== */
+      updatePreview();
+      updateCooldownUI();
+      checkUserProjects();
+
+        </script>
+      </body>
+
+</html>
