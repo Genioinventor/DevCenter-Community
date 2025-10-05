@@ -794,12 +794,37 @@
       /* ===== API ===== */
       async function getBinRaw() {
         if (USE_JSONBIN) {
+          console.log('[getBinRaw] Solicitando proyectos de JSONBin...');
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification('Cargando proyectos...', '📥');
+          }
+          
           const resp = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { cache: 'no-store' });
-          if (!resp.ok) throw new Error('GET failed: ' + resp.status);
+          
+          if (!resp.ok) {
+            console.error('[getBinRaw] Error al obtener proyectos:', resp.status);
+            if (window.showDevCenterNotification) {
+              window.showDevCenterNotification(`Error al cargar: ${resp.status}`, '❌');
+            }
+            throw new Error('GET failed: ' + resp.status);
+          }
+          
+          console.log('[getBinRaw] Proyectos obtenidos exitosamente');
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification('Proyectos cargados', '✅');
+          }
+          
           return await resp.json();
         } else {
+          console.log('[getBinRaw] Solicitando archivo local...');
           const resp = await fetch(LOCAL_JSON_PATH + '?t=' + Date.now(), { cache: 'no-store' });
-          if (!resp.ok) throw new Error('GET local failed: ' + resp.status);
+          
+          if (!resp.ok) {
+            console.error('[getBinRaw] Error al obtener local:', resp.status);
+            throw new Error('GET local failed: ' + resp.status);
+          }
+          
+          console.log('[getBinRaw] Archivo local obtenido');
           return await resp.json();
         }
       }
@@ -809,6 +834,11 @@
       }
       async function putBin(bodyObj) {
         if (USE_JSONBIN) {
+          console.log('[putBin] Guardando proyecto en JSONBin...');
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification('Guardando proyecto...', '💾');
+          }
+          
           const resp = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
             method: 'PUT',
             headers: {
@@ -818,10 +848,21 @@
             },
             body: JSON.stringify(bodyObj)
           });
+          
           if (!resp.ok) {
             const txt = await resp.text().catch(() => null);
+            console.error('[putBin] Error al guardar:', resp.status, txt);
+            if (window.showDevCenterNotification) {
+              window.showDevCenterNotification(`Error al guardar: ${resp.status}`, '❌');
+            }
             throw new Error('PUT failed ' + resp.status + ' ' + (txt || ''));
           }
+          
+          console.log('[putBin] Proyecto guardado exitosamente');
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification('Proyecto guardado', '✅');
+          }
+          
           return await resp.json();
         } else {
           showMessage('Guardado local no soportado en navegador. Cambia a JSONBin para guardar.', 'error');

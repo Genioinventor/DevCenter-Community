@@ -1321,12 +1321,20 @@
       if (!username) return [];
 
       try {
+        console.log('[getUserProjectsFromBin] Cargando proyectos del usuario...');
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification('Cargando tus proyectos...', '📂');
+        }
+        
         const response = await fetch(`https://api.jsonbin.io/v3/b/${PROJECTS_BIN_ID}/latest`, {
           cache: 'no-store'
         });
         
         if (!response.ok) {
-          console.error('Error al cargar proyectos del bin:', response.status);
+          console.error('[getUserProjectsFromBin] Error al cargar proyectos:', response.status);
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification(`Error al cargar: ${response.status}`, '❌');
+          }
           return [];
         }
 
@@ -1338,9 +1346,17 @@
           return project.owner && project.owner === username;
         });
         
+        console.log(`[getUserProjectsFromBin] ${userProjects.length} proyectos cargados para ${username}`);
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification(`${userProjects.length} proyectos cargados`, '✅');
+        }
+        
         return userProjects;
       } catch (error) {
-        console.error('Error cargando proyectos del bin:', error);
+        console.error('[getUserProjectsFromBin] Error cargando proyectos:', error);
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification('Error cargando proyectos', '❌');
+        }
         return [];
       }
     }
@@ -1450,8 +1466,14 @@
       // Si el proyecto estaba sincronizado, eliminarlo de AMBOS bins
       if (projectToDelete.synced) {
         try {
+          console.log('[deleteProject] Eliminando proyecto del bin principal...');
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification('Eliminando proyecto...', '🗑️');
+          }
+          
           // Eliminar del bin principal
           const resp = await fetch(`https://api.jsonbin.io/v3/b/${PROJECTS_BIN_ID}/latest`, { cache: 'no-store' });
+          
           if (resp.ok) {
             const raw = await resp.json();
             const currentProjects = raw.record?.projects || [];
@@ -1461,6 +1483,7 @@
             meta.projects_count = updatedProjects.length;
             meta.updated = new Date().toISOString();
             
+            console.log('[deleteProject] Guardando cambios en el bin...');
             await fetch(`https://api.jsonbin.io/v3/b/${PROJECTS_BIN_ID}`, {
               method: 'PUT',
               headers: {
@@ -1471,9 +1494,18 @@
               body: JSON.stringify({ meta, projects: updatedProjects })
             });
             
+            console.log('[deleteProject] Proyecto eliminado exitosamente');
+            if (window.showDevCenterNotification) {
+              window.showDevCenterNotification('Proyecto eliminado', '✅');
+            }
+            
             showMessage('Proyecto eliminado exitosamente.', 'success');
           }
         } catch (err) {
+          console.error('[deleteProject] Error al eliminar:', err);
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification('Error al eliminar', '❌');
+          }
           showMessage('Proyecto eliminado localmente. Error al sincronizar: ' + err.message, 'error');
         }
       } else {
@@ -1509,8 +1541,14 @@
       // Si estaba sincronizado, actualizar en AMBOS bins (principal y usuarios)
       if (wasSynced) {
         try {
+          console.log('[editProject] Actualizando proyecto en el bin principal...');
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification('Actualizando proyecto...', '✏️');
+          }
+          
           // Actualizar bin principal
           const resp = await fetch(`https://api.jsonbin.io/v3/b/${PROJECTS_BIN_ID}/latest`, { cache: 'no-store' });
+          
           if (resp.ok) {
             const raw = await resp.json();
             const currentProjects = raw.record?.projects || [];
@@ -1532,6 +1570,7 @@
               
               meta.updated = new Date().toISOString();
               
+              console.log('[editProject] Guardando cambios en el bin...');
               await fetch(`https://api.jsonbin.io/v3/b/${PROJECTS_BIN_ID}`, {
                 method: 'PUT',
                 headers: {
@@ -1542,12 +1581,21 @@
                 body: JSON.stringify({ meta, projects: currentProjects })
               });
               
+              console.log('[editProject] Proyecto actualizado exitosamente');
+              if (window.showDevCenterNotification) {
+                window.showDevCenterNotification('Proyecto actualizado', '✅');
+              }
+              
               myProjects[editingIndex].synced = true;
               saveUserProjects(myProjects);
               showMessage('Proyecto actualizado exitosamente.', 'success');
             }
           }
         } catch (err) {
+          console.error('[editProject] Error al actualizar:', err);
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification('Error al actualizar', '❌');
+          }
           showMessage('Proyecto actualizado localmente. Error al sincronizar: ' + err.message, 'error');
         }
       } else {
@@ -1632,9 +1680,22 @@
       showMessage('Sincronizando con la API...', 'success');
 
       try {
+        console.log('[syncWithAPI] Sincronizando proyectos con la API...');
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification(`Sincronizando ${pendingProjects.length} proyectos...`, '🔄');
+        }
+        
         // Obtener el bin actual
         const resp = await fetch(`https://api.jsonbin.io/v3/b/68af329cae596e708fd92637/latest`, { cache: 'no-store' });
-        if (!resp.ok) throw new Error('Error al obtener proyectos de la API');
+        
+        if (!resp.ok) {
+          console.error('[syncWithAPI] Error al obtener proyectos:', resp.status);
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification(`Error al sincronizar: ${resp.status}`, '❌');
+          }
+          throw new Error('Error al obtener proyectos de la API');
+        }
+        
         const raw = await resp.json();
         
         const currentProjects = raw.record?.projects || [];
@@ -1666,6 +1727,7 @@
         meta.projects_count = currentProjects.length;
         meta.updated = new Date().toISOString();
 
+        console.log('[syncWithAPI] Guardando proyectos sincronizados...');
         // Guardar en el bin principal
         const putResp = await fetch(`https://api.jsonbin.io/v3/b/68af329cae596e708fd92637`, {
           method: 'PUT',
@@ -1677,7 +1739,18 @@
           body: JSON.stringify({ meta, projects: currentProjects })
         });
 
-        if (!putResp.ok) throw new Error('Error al sincronizar bin principal');
+        if (!putResp.ok) {
+          console.error('[syncWithAPI] Error al guardar:', putResp.status);
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification(`Error al guardar: ${putResp.status}`, '❌');
+          }
+          throw new Error('Error al sincronizar bin principal');
+        }
+
+        console.log('[syncWithAPI] Proyectos sincronizados exitosamente');
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification('Proyectos sincronizados', '✅');
+        }
 
         // Marcar proyectos como sincronizados
         myProjects.forEach(p => p.synced = true);
@@ -1686,6 +1759,10 @@
         showMessage('¡Proyectos sincronizados exitosamente en ambos bins! ✅', 'success');
         loadProjects();
       } catch (err) {
+        console.error('[syncWithAPI] Error:', err);
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification(`Error: ${err.message}`, '❌');
+        }
         showMessage('Error al sincronizar: ' + err.message, 'error');
       } finally {
         syncBtn.disabled = false;
@@ -1740,6 +1817,11 @@
       if (!username) return null;
 
       try {
+        console.log('[getUserData] Obteniendo datos del usuario...');
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification('Cargando perfil...', '👤');
+        }
+        
         const response = await fetch('https://api.jsonbin.io/v3/b/68d03bc343b1c97be94a869d/latest', {
           cache: 'no-store',
           headers: {
@@ -1748,13 +1830,29 @@
           }
         });
 
-        if (!response.ok) return null;
+        if (!response.ok) {
+          console.error('[getUserData] Error al obtener datos:', response.status);
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification(`Error al cargar perfil: ${response.status}`, '❌');
+          }
+          return null;
+        }
         
         const data = await response.json();
         const usuarios = data.record?.usuarios || [];
-        return usuarios.find(u => u.usuario === username);
+        const usuario = usuarios.find(u => u.usuario === username);
+        
+        console.log('[getUserData] Datos de usuario obtenidos');
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification('Perfil cargado', '✅');
+        }
+        
+        return usuario;
       } catch (error) {
-        console.error('Error obteniendo datos de usuario:', error);
+        console.error('[getUserData] Error obteniendo datos:', error);
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification('Error obteniendo perfil', '❌');
+        }
         return null;
       }
     }
@@ -1824,6 +1922,11 @@
       }
 
       try {
+        console.log('[saveProfile] Cargando datos de usuarios...');
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification('Actualizando perfil...', '✏️');
+        }
+        
         const response = await fetch('https://api.jsonbin.io/v3/b/68d03bc343b1c97be94a869d/latest', {
           cache: 'no-store',
           headers: {
@@ -1832,7 +1935,13 @@
           }
         });
 
-        if (!response.ok) throw new Error('Error al cargar usuarios');
+        if (!response.ok) {
+          console.error('[saveProfile] Error al cargar usuarios:', response.status);
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification(`Error al cargar: ${response.status}`, '❌');
+          }
+          throw new Error('Error al cargar usuarios');
+        }
 
         const data = await response.json();
         const usuarios = data.record?.usuarios || [];
@@ -1857,6 +1966,7 @@
           usuarios[userIndex].contrasena = newPassword;
         }
 
+        console.log('[saveProfile] Guardando cambios en el bin...');
         // Guardar cambios
         const putResponse = await fetch('https://api.jsonbin.io/v3/b/68d03bc343b1c97be94a869d', {
           method: 'PUT',
@@ -1869,7 +1979,18 @@
           body: JSON.stringify({ usuarios })
         });
 
-        if (!putResponse.ok) throw new Error('Error al guardar cambios');
+        if (!putResponse.ok) {
+          console.error('[saveProfile] Error al guardar:', putResponse.status);
+          if (window.showDevCenterNotification) {
+            window.showDevCenterNotification(`Error al guardar: ${putResponse.status}`, '❌');
+          }
+          throw new Error('Error al guardar cambios');
+        }
+
+        console.log('[saveProfile] Perfil actualizado exitosamente');
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification('Perfil actualizado', '✅');
+        }
 
         // Actualizar localStorage
         localStorage.setItem('currentUser', JSON.stringify({ usuario: newUsername, username: newUsername }));
@@ -1882,6 +2003,10 @@
         document.getElementById('profileUsername').textContent = newUsername;
         
       } catch (error) {
+        console.error('[saveProfile] Error:', error);
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification(`Error: ${error.message}`, '❌');
+        }
         showMessage('Error al actualizar perfil: ' + error.message, 'error');
       }
     });

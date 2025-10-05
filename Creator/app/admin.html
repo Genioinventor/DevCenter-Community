@@ -520,12 +520,35 @@
     let editingIndex = -1;
 
     async function getBinRaw() {
+      console.log('[admin-getBinRaw] Cargando proyectos desde la API...');
+      if (window.showDevCenterNotification) {
+        window.showDevCenterNotification('Cargando proyectos (Admin)...', '📥');
+      }
+      
       const resp = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { cache: 'no-store' });
-      if (!resp.ok) throw new Error('Error al obtener proyectos');
+      
+      if (!resp.ok) {
+        console.error('[admin-getBinRaw] Error al obtener proyectos:', resp.status);
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification(`Error al cargar: ${resp.status}`, '❌');
+        }
+        throw new Error('Error al obtener proyectos');
+      }
+      
+      console.log('[admin-getBinRaw] Proyectos cargados exitosamente');
+      if (window.showDevCenterNotification) {
+        window.showDevCenterNotification('Proyectos cargados (Admin)', '✅');
+      }
+      
       return await resp.json();
     }
 
     async function putBin(bodyObj) {
+      console.log('[admin-putBin] Guardando cambios en la API...');
+      if (window.showDevCenterNotification) {
+        window.showDevCenterNotification('Guardando cambios (Admin)...', '💾');
+      }
+      
       const resp = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
         method: 'PUT',
         headers: {
@@ -535,7 +558,20 @@
         },
         body: JSON.stringify(bodyObj)
       });
-      if (!resp.ok) throw new Error('Error al guardar');
+      
+      if (!resp.ok) {
+        console.error('[admin-putBin] Error al guardar:', resp.status);
+        if (window.showDevCenterNotification) {
+          window.showDevCenterNotification(`Error al guardar: ${resp.status}`, '❌');
+        }
+        throw new Error('Error al guardar');
+      }
+      
+      console.log('[admin-putBin] Cambios guardados exitosamente');
+      if (window.showDevCenterNotification) {
+        window.showDevCenterNotification('Cambios guardados (Admin)', '✅');
+      }
+      
       return await resp.json();
     }
 

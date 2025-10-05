@@ -64,35 +64,86 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
     'archived': 'status-archived'
   };
 
+  // SISTEMA DE CACHÉ
+  function getCacheDuration(type) {
+    const config = window.BIN_CONFIG?.CACHE || {};
+    
+    if (type === 'projects') {
+      const minutes = config.PROJECTS_CACHE_MINUTES ?? 5;
+      return minutes * 60 * 1000; // Convertir minutos a milisegundos
+    }
+    
+    if (type === 'reviews') {
+      const minutes = config.REVIEWS_CACHE_MINUTES ?? 5;
+      return minutes * 60 * 1000;
+    }
+    
+    return 5 * 60 * 1000; // Por defecto 5 minutos
+  }
+  
+  function getCachedData(key, type) {
+    try {
+      const cacheDuration = getCacheDuration(type);
+      
+      if (cacheDuration === 0) {
+        return null;
+      }
+      
+      const cached = localStorage.getItem(key);
+      if (!cached) return null;
+      
+      const { data, timestamp } = JSON.parse(cached);
+      const now = Date.now();
+      
+      if (now - timestamp > cacheDuration) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error leyendo caché:', error);
+      return null;
+    }
+  }
+  
+  function setCachedData(key, data, type) {
+    try {
+      const cacheDuration = getCacheDuration(type);
+      
+      if (cacheDuration === 0) {
+        return;
+      }
+      
+      const cacheEntry = {
+        data: data,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(key, JSON.stringify(cacheEntry));
+    } catch (error) {
+      console.error('Error guardando en caché:', error);
+    }
+  }
+
   // FUNCIONES PARA RESEÑAS Y COMENTARIOS
   async function loadReviews() {
     try {
-      const cacheKey = `reviews_cache_${REVIEWS_BIN_ID}`;
-      
-      const cached = sessionStorage.getItem(cacheKey);
-      if (cached) {
-        try {
-          const data = JSON.parse(cached);
-          allReviews = data;
-          return allReviews;
-        } catch (e) {
-          sessionStorage.removeItem(cacheKey);
-        }
+      const cachedData = getCachedData('reviews_cache', 'reviews');
+      if (cachedData) {
+        console.log('[Cache] Reseñas cargadas desde caché');
+        allReviews = cachedData;
+        return allReviews;
       }
       
       console.log('[✔️] Solicitud enviada a la API');
       const response = await fetch(`https://api.jsonbin.io/v3/b/${REVIEWS_BIN_ID}/latest`, {
-        cache: "default"
+        cache: "no-cache"
       });
       if (!response.ok) throw new Error('No se pudo cargar las reseñas');
       const data = await response.json();
       allReviews = data.record.comentarios || [];
       
-      try {
-        sessionStorage.setItem(cacheKey, JSON.stringify(allReviews));
-      } catch (e) {
-        console.warn('Error guardando cache de reseñas:', e);
-      }
+      setCachedData('reviews_cache', allReviews, 'reviews');
       
       return allReviews;
     } catch (error) {
@@ -1155,22 +1206,15 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
     
     // Cargar proyectos SOLO desde el bin principal configurado
     const binId = window.BIN_CONFIG?.PROJECTS_BIN_ID || '68af329cae596e708fd92637';
-    const cacheKey = `projects_cache_${binId}`;
     
-    const cachedProjects = sessionStorage.getItem(cacheKey);
+    const cachedProjects = getCachedData('projects_cache', 'projects');
     if (cachedProjects) {
-      try {
-        allProjects = JSON.parse(cachedProjects);
-        console.log(`✅ Total de proyectos cargados (cache): ${allProjects.length}`);
-      } catch (e) {
-        sessionStorage.removeItem(cacheKey);
-      }
-    }
-    
-    if (!allProjects || allProjects.length === 0) {
+      console.log('[Cache] Proyectos cargados desde caché');
+      allProjects = cachedProjects;
+    } else {
       console.log('[✔️] Solicitud enviada a la API');
       const projectsResp = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-        cache: "default"
+        cache: "no-cache"
       });
       
       if (!projectsResp.ok) throw new Error('No se pudo obtener proyectos desde JSONBin');
@@ -1178,14 +1222,10 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
       const projectsData = await projectsResp.json();
       allProjects = projectsData.record.projects || [];
       
-      try {
-        sessionStorage.setItem(cacheKey, JSON.stringify(allProjects));
-      } catch (e) {
-        console.warn('Error guardando cache:', e);
-      }
-      
-      console.log(`✅ Total de proyectos cargados: ${allProjects.length}`);
+      setCachedData('projects_cache', allProjects, 'projects');
     }
+    
+    console.log(`✅ Total de proyectos cargados: ${allProjects.length}`);
     
     // Construir cache de popularidad después de cargar proyectos y reseñas
     buildPopularityCache();
