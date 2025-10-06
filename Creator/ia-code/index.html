@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DevCenter IA Code </title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="particles"></div>
+  <main class="wrap">
+    <div id="app" class="card">
+      <!-- Header -->
+      <header class="header">
+        <button id="fullscreen-btn" class="fullscreen-btn" title="Pantalla Completa">
+          <span class="fullscreen-icon">⛶</span>
+        </button>
+        <button onclick="window.location.href='../select.html'" class="fullscreen-btn" title="Volver" style="left: 60px;">
+          <span class="fullscreen-icon">←</span>
+        </button>
+        <div class="logo">
+          <div class="emoji-hero">  </div>
+          <h1 class="shimmer">DevCenter IA Code</h1>
+          <p class="muted">Generador de Páginas Web con Inteligencia Artificial</p>
+        </div>
+      </header>
+
+      <!-- Panel 1: Chat Interface -->
+      <div id="panel1" class="panel active">
+        <div class="chat-container">
+          <div id="chat-messages" class="chat-messages">
+            <div class="message ai-message">
+              <div class="message-content">
+                <strong>🤖 IA:</strong> ¡Hola! Soy tu asistente de IA para crear páginas web.
+              </div>
+            </div>
+          </div>
+          
+          <div class="chat-input-container">
+            <textarea id="chat-input" placeholder="Describe qué tipo de página web quieres crear..." rows="3"></textarea>
+            <button id="send-message" class="primary">Enviar 🚀</button>
+          </div>
+        </div>
+
+        <!-- Generated Website Preview -->
+        <div id="website-preview" class="website-preview hidden">
+          <h3>Vista Previa de tu Página Web:</h3>
+          <div id="preview-content" class="preview-content"></div>
+          
+          <div class="preview-actions">
+            <button id="regenerate-btn" class="secondary">🔄 Regenerar</button>
+            <button id="preview-fullscreen-btn" class="secondary">⛶ Pantalla Completa</button>
+            <button id="continue-btn" class="continue-btn">✨ Continuar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2: Code Validation -->
+      <div id="panel2" class="panel">
+        <div class="instructions-panel">
+          <h4>🚀 Para publicar tu página web:</h4>
+          <p>1. ✅ Archivo descargado automáticamente</p>
+          <p>2. 📱 Envía el archivo a <strong>321 100 2280</strong> por WhatsApp</p>
+          <p>3. 💬 Escribe: <em>"¿Puedes publicar mi página web?"</em></p>
+          <p>4. 🔐 Ingresa el código proporcionado:</p>
+        </div>
+        
+        <div class="code-input-container">
+          <input type="text" id="code-input" class="code-input" placeholder="Código del archivo..." />
+          <button id="validate-code" class="primary" style="margin-top:15px;">Validar Código</button>
+          <button id="redownload-btn" class="secondary" style="margin-top:15px;">📥 Volver a Descargar Archivo</button>
+        </div>
+        
+        <div id="code-message" class="message"></div>
+        
+        <button id="back-btn" class="secondary" style="margin-top:20px;">← Volver al Chat</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Cargar sistema de autenticación -->
+  <script src="../api.js"></script>
+  <script>
+    // Verificar autenticación al cargar la página
+    function checkAuth() {
+      // Esperar a que window.auth esté disponible
+      if (typeof window.auth === 'undefined') {
+        console.log('⏳ Esperando sistema de autenticación...');
+        setTimeout(checkAuth, 50);
+        return;
+      }
+      
+      // Usar el método oficial de autenticación
+      if (!window.auth.isLoggedIn()) {
+        // No hay sesión activa, redirigir al login
+        console.log('❌ No hay sesión activa, redirigiendo al login...');
+        window.location.href = '../index.html';
+        return false;
+      }
+      
+      console.log('✅ Sesión activa verificada en IA Code');
+      return true;
+    }
+    
+    // Verificar inmediatamente
+    checkAuth();
+  </script>
+  <script src="script.js"></script>
+</body>
+
+</html>

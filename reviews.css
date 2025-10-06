@@ -188,3 +188,109 @@
     font-size: 0.9rem;
   }
 }
+
+/* ============ ESTILOS PARA TEMA CLARO ============ */
+@media (prefers-color-scheme: light) {
+  .star-empty {
+    color: rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .rating-text {
+    color: #000000 !important;
+    font-weight: 700 !important;
+  }
+
+  .reviews-section {
+    border-top: 3px solid rgba(0, 0, 0, 0.35) !important;
+  }
+
+  .reviews-title {
+    color: #000000 !important;
+    font-weight: 800 !important;
+  }
+
+  .review-item {
+    background: rgba(0, 0, 0, 0.08) !important;
+    border: 3px solid rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .review-item:hover {
+    background: rgba(0, 0, 0, 0.12) !important;
+    border-color: rgba(0, 0, 0, 0.5) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .review-user {
+    color: #ea580c !important;
+    font-weight: 800 !important;
+  }
+
+  .review-date {
+    color: rgba(0, 0, 0, 0.75) !important;
+    font-weight: 600 !important;
+  }
+
+  .review-comment {
+    color: #000000 !important;
+    font-weight: 600 !important;
+    line-height: 1.7 !important;
+  }
+
+  .no-reviews {
+    color: rgba(0, 0, 0, 0.7) !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* Estilos forzados para tema claro manual */
+html.theme-light .star-empty {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+html.theme-light .rating-text {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+html.theme-light .reviews-section {
+  border-top: 3px solid rgba(0, 0, 0, 0.35) !important;
+}
+
+html.theme-light .reviews-title {
+  color: #000000 !important;
+  font-weight: 800 !important;
+}
+
+html.theme-light .review-item {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border: 3px solid rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+html.theme-light .review-item:hover {
+  background: rgba(0, 0, 0, 0.12) !important;
+  border-color: rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+html.theme-light .review-user {
+  color: #ea580c !important;
+  font-weight: 800 !important;
+}
+
+html.theme-light .review-date {
+  color: rgba(0, 0, 0, 0.75) !important;
+  font-weight: 600 !important;
+}
+
+html.theme-light .review-comment {
+  color: #000000 !important;
+  font-weight: 600 !important;
+  line-height: 1.7 !important;
+}
+
+html.theme-light .no-reviews {
+  color: rgba(0, 0, 0, 0.7) !important;
+  font-weight: 600 !important;
+}

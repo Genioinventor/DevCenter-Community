@@ -9,6 +9,40 @@
   <style>
     /* ================ Layout / UI (mantengo tu diseño) ================ */
 
+    :root {
+      --bg-gradient-start: #0a0a18;
+      --bg-gradient-mid: #1a1a2e;
+      --bg-gradient-end: #16213e;
+      --text-primary: #fff;
+      --text-secondary: #f1f5f9;
+      --form-bg: rgba(255, 255, 255, 0.06);
+      --form-border: rgba(250, 204, 21, 0.25);
+      --input-bg: rgba(255, 255, 255, 0.09);
+      --input-border: rgba(255, 255, 255, 0.12);
+      --input-text: #fff;
+      --overlay-yellow: rgba(250, 204, 21, 0.08);
+      --overlay-green: rgba(34, 197, 94, 0.08);
+      --overlay-blue: rgba(59, 130, 246, 0.08);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-gradient-start: #f0f4ff;
+        --bg-gradient-mid: #e6edff;
+        --bg-gradient-end: #dce6ff;
+        --text-primary: #1a1a2e;
+        --text-secondary: #374151;
+        --form-bg: rgba(255, 255, 255, 0.9);
+        --form-border: rgba(250, 204, 21, 0.4);
+        --input-bg: rgba(255, 255, 255, 0.95);
+        --input-border: rgba(102, 126, 234, 0.2);
+        --input-text: #1a1a2e;
+        --overlay-yellow: rgba(250, 204, 21, 0.03);
+        --overlay-green: rgba(34, 197, 94, 0.03);
+        --overlay-blue: rgba(59, 130, 246, 0.03);
+      }
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -17,8 +51,8 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0a0a18 0%, #1a1a2e 50%, #16213e 100%);
-      color: #fff;
+      background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+      color: var(--text-primary);
       padding: 20px;
       min-height: 100vh;
       position: relative;
@@ -32,9 +66,9 @@
       width: 100%;
       height: 100%;
       background-image:
-        radial-gradient(2px 2px at 20px 30px, rgba(250, 204, 21, 0.08), transparent),
-        radial-gradient(1px 1px at 90px 40px, rgba(34, 197, 94, 0.08), transparent),
-        radial-gradient(1px 1px at 130px 80px, rgba(59, 130, 246, 0.08), transparent);
+        radial-gradient(2px 2px at 20px 30px, var(--overlay-yellow), transparent),
+        radial-gradient(1px 1px at 90px 40px, var(--overlay-green), transparent),
+        radial-gradient(1px 1px at 130px 80px, var(--overlay-blue), transparent);
       background-size: 150px 150px;
       pointer-events: none;
       z-index: -1;
@@ -63,9 +97,9 @@
     }
 
     .form-container {
-      background: rgba(255, 255, 255, 0.06);
+      background: var(--form-bg);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(250, 204, 21, 0.25);
+      border: 1px solid var(--form-border);
       padding: clamp(1.5rem, 4vw, 2.8rem);
       border-radius: 24px;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
@@ -93,7 +127,7 @@
       display: block;
       margin-bottom: .7rem;
       font-weight: 700;
-      color: #f1f5f9;
+      color: var(--text-secondary);
       font-size: .9rem;
       text-transform: uppercase;
       letter-spacing: .8px;
@@ -105,10 +139,10 @@
     select {
       width: 100%;
       padding: 1.1rem 1.3rem;
-      background: rgba(255, 255, 255, 0.09);
-      border: 2px solid rgba(255, 255, 255, 0.12);
+      background: var(--input-bg);
+      border: 2px solid var(--input-border);
       border-radius: 14px;
-      color: #fff;
+      color: var(--input-text);
       font-size: 1rem;
       transition: all .25s cubic-bezier(.4, 0, .2, 1);
       backdrop-filter: blur(8px);
@@ -578,7 +612,16 @@
     </script>
 
     <div class="container">
-      <h1>Agregar Proyecto a DevCenter</h1>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <a href="../select.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; 
+           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; 
+           border-radius: 10px; font-weight: 600; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3); 
+           transition: all 0.3s ease;">
+          ← Volver
+        </a>
+        <h1 style="margin: 0;">Agregar Proyecto a DevCenter</h1>
+        <div style="width: 100px;"></div>
+      </div>
 
       <div class="form-container">
         <div class="form-grid">
@@ -656,7 +699,7 @@
                 class="submit-btn"
                 style="text-align:center;background:linear-gradient(45deg,#667eea,#764ba2);box-shadow:0 8px 25px rgba(118,75,162,0.25);">Abrir
                 DevCenter</a>
-              <a id="myProjectsBtn" href="my-projects.html" class="submit-btn" style="display:none;text-align:center;background:linear-gradient(45deg,#22c55e,#16a34a);box-shadow:0 8px 25px rgba(34,197,94,0.25);">Gestionar Mis Proyectos</a>
+              <a id="myProjectsBtn" href="my-projects.html" onclick="localStorage.setItem('myProjectsReturnTo', 'app')" class="submit-btn" style="display:none;text-align:center;background:linear-gradient(45deg,#22c55e,#16a34a);box-shadow:0 8px 25px rgba(34,197,94,0.25);">Gestionar Mis Proyectos</a>
               <a id="adminBtn" href="admin.html" class="submit-btn" style="display:none;text-align:center;background:linear-gradient(45deg,#ef4444,#dc2626);box-shadow:0 8px 25px rgba(239,68,68,0.25);">Gestión de Proyectos</a>
             </div>
 
@@ -1036,6 +1079,7 @@
           showMessage('¡Proyecto agregado con éxito a ambos bins! ✅', 'success');
           
           setTimeout(() => {
+            localStorage.setItem('myProjectsReturnTo', 'app');
             window.location.href = 'my-projects.html';
           }, 1500);
 

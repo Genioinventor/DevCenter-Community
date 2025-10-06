@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DevCenter Addon</title>
+  <style>
+    /* ================ Layout / UI (mantengo tu diseño) ================ */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a1a 50%, #1a1a2e 100%);
+      color: #fff;
+      padding: 20px;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(250, 204, 21, 0.1), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(34, 197, 94, 0.1), transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(59, 130, 246, 0.1), transparent);
+      background-size: 150px 150px;
+      animation: sparkle 10s linear infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes sparkle {
+      0% {
+        transform: translate(0px, 0px) rotate(0deg);
+      }
+
+      100% {
+        transform: translate(-150px, -150px) rotate(360deg);
+      }
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1
+    }
+
+    h1 {
+      color: #facc15;
+      text-align: center;
+      font-size: 2.8rem;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
+      background: linear-gradient(45deg, #facc15, #fde047);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: glow 2s ease-in-out infinite alternate
+    }
+
+    @keyframes glow {
+      from {
+        filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.3));
+      }
+
+      to {
+        filter: drop-shadow(0 0 20px rgba(250, 204, 21, 0.6));
+      }
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(250, 204, 21, 0.2);
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden
+    }
+
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(250, 204, 21, 0.1), transparent);
+      animation: shine 4s infinite
+    }
+
+    @keyframes shine {
+      0% {
+        left: -100%
+      }
+
+      100% {
+        left: 100%
+      }
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px
+    }
+
+    @media(max-width:980px) {
+      .form-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .form-group {
+      margin-bottom: 1.4rem;
+      position: relative
+    }
+
+    label {
+      display: block;
+      margin-bottom: .6rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      font-size: .9rem;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3)
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1rem;
+      transition: all .25s cubic-bezier(.4, 0, .2, 1);
+      backdrop-filter: blur(5px);
+      position: relative
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #facc15;
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.15), 0 8px 25px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px)
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.5)
+    }
+
+    select {
+      cursor: pointer
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: .6rem;
+      margin-top: .6rem
+    }
+
+    .status-option {
+      padding: .7rem .9rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      cursor: pointer;
+      transition: all .2s ease;
+      border: 2px solid;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      display: block
+    }
+
+    .status-option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+      transition: left .45s
+    }
+
+    .status-option:hover::before {
+      left: 100%
+    }
+
+    .status-option.selected {
+      transform: scale(1.03);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.28)
+    }
+
+    #hiddenStatus {
+      display: none
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1.15rem;
+      background: linear-gradient(45deg, #22c55e, #16a34a);
+      border: none;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all .25s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.22)
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+      transition: left .35s
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(34, 197, 94, 0.32)
+    }
+
+    .submit-btn:hover::before {
+      left: 100%
+    }
+
+    .submit-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.98rem;
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      transition: all .25s;
+      opacity: 0;
+      transform: translateY(12px)
+    }
+
+    .message.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .message.success {
+      background: linear-gradient(45deg, rgba(34, 197, 94, 0.12), rgba(22, 163, 74, 0.12));
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      color: #4ade80;
+      box-shadow: 0 8px 18px rgba(34, 197, 94, 0.12)
+    }
+
+    .message.error {
+      background: linear-gradient(45deg, rgba(239, 68, 68, 0.12), rgba(220, 38, 38, 0.12));
+      border: 1px solid rgba(239, 68, 68, 0.18);
+      color: #f87171;
+      box-shadow: 0 8px 18px rgba(239, 68, 68, 0.12)
+    }
+
+    .message.loading {
+      background: linear-gradient(45deg, rgba(59, 130, 246, 0.12), rgba(37, 99, 235, 0.12));
+      border: 1px solid rgba(59, 130, 246, 0.18);
+      color: #60a5fa;
+      box-shadow: 0 8px 18px rgba(59, 130, 246, 0.12)
+    }
+
+    .loading-dots::after {
+      content: '';
+      animation: dots 2s infinite
+    }
+
+    @keyframes dots {
+
+      0%,
+      20% {
+        content: ''
+      }
+
+      40% {
+        content: '.'
+      }
+
+      60% {
+        content: '..'
+      }
+
+      80%,
+      100% {
+        content: '...'
+      }
+    }
+
+    .preview-container {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(250, 204, 21, 0.12);
+      padding: 1rem;
+      border-radius: 14px;
+      margin-bottom: 1rem;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all .25s
+    }
+
+    .preview-container.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .preview-title {
+      color: #facc15;
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: .8rem;
+      text-align: center
+    }
+
+    .preview-card {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06)
+    }
+
+    .preview-card h3 {
+      color: #fff;
+      margin-bottom: .4rem;
+      font-size: 1.05rem
+    }
+
+    .preview-card .url {
+      color: #60a5fa;
+      font-size: .88rem;
+      margin-bottom: .6rem;
+      word-break: break-all
+    }
+
+    .preview-card .description {
+      color: #cbd5e1;
+      font-size: 0.92rem;
+      margin-bottom: .6rem
+    }
+
+    /* <--- añadido para mostrar la descripción */
+    .preview-card .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-bottom: .6rem
+    }
+
+    .preview-card .tag {
+      background: rgba(59, 130, 246, 0.14);
+      color: #60a5fa;
+      padding: .28rem .6rem;
+      border-radius: 12px;
+      font-size: .78rem;
+      border: 1px solid rgba(59, 130, 246, 0.18)
+    }
+
+    .preview-card .status-badge {
+      display: inline-block;
+      padding: .34rem .65rem;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .45px
+    }
+
+    .preview-card .initials {
+      float: right;
+      background: rgba(250, 204, 21, 0.14);
+      color: #facc15;
+      padding: .3rem .6rem;
+      border-radius: 50%;
+      font-weight: 800;
+      font-size: .78rem;
+      border: 1px solid rgba(250, 204, 21, 0.18)
+    }
+
+    @media(max-width:980px) {
+      .form-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* ================ Status styles (mantengo muchas, pero la UI solo mostrará las 10 que pediste) ================ */
+    .status-activo {
+      background: rgba(34, 197, 94, 0.15);
+      color: #047857;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+    }
+
+    .status-oficial {
+      background: rgba(34, 197, 94, 0.18);
+      color: #0b3b1f;
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+
+    .status-community {
+      background: rgba(99, 102, 241, 0.14);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .status-beta {
+      background: rgba(251, 191, 36, 0.18);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.25);
+    }
+
+    .status-stable {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.18);
+    }
+
+    .status-experimental {
+      background: rgba(236, 72, 153, 0.14);
+      color: #ec4899;
+      border: 1px solid rgba(236, 72, 153, 0.2);
+    }
+
+    .status-premium {
+      background: rgba(217, 119, 6, 0.14);
+      color: #d97706;
+      border: 1px solid rgba(217, 119, 6, 0.2);
+    }
+
+    .status-free {
+      background: rgba(34, 197, 94, 0.12);
+      color: #16a34a;
+      border: 1px solid rgba(34, 197, 94, 0.18);
+    }
+
+    .status-demo {
+      background: rgba(2, 132, 199, 0.14);
+      color: #0284c7;
+      border: 1px solid rgba(2, 132, 199, 0.2);
+    }
+
+    .status-urgent {
+      background: rgba(239, 68, 68, 0.14);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .status-archived {
+      background: rgba(71, 85, 105, 0.12);
+      color: #475569;
+      border: 1px solid rgba(71, 85, 105, 0.18);
+    }
+
+    /* small helper style for cooldown display */
+    #cooldownDisplay {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      font-weight: 700;
+      text-align: center
+    }
+
+    /* Estilo para campo deshabilitado */
+    input:disabled {
+      background: rgba(255, 255, 255, 0.02) !important;
+      color: #9ca3af !important;
+      cursor: not-allowed !important;
+      border-color: rgba(255, 255, 255, 0.05) !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Agregar Proyecto a DevCenter</h1>
+
+    <div class="form-container">
+      <div class="form-grid">
+        <form id="projectForm" autocomplete="off" novalidate>
+          <div class="form-group">
+            <label for="title">Título del Proyecto</label>
+            <input id="title" type="text" placeholder="Mi Increíble Proyecto" required maxlength="20" />
+          </div>
+
+          <div class="form-group">
+            <label for="url">URL del Proyecto</label>
+            <input id="url" type="url" placeholder="https://mi-proyecto.netlify.app" required maxlength="57" />
+          </div>
+
+          <div class="form-group">
+            <label for="tags">Tags (separados por coma)</label>
+            <input id="tags" type="text" placeholder="Ej: Portfolio, Blog, Tienda Online" maxlength="150" />
+          </div>
+
+          <!-- === DESCRIPCIÓN: agregado === -->
+          <div class="form-group">
+            <label for="description">Descripción</label>
+            <textarea id="description" placeholder="Breve descripción del proyecto (máx. 500 caracteres)"
+              maxlength="500"></textarea>
+          </div>
+          <!-- ============================= -->
+
+          <div class="form-group">
+            <label for="initials">Iniciales</label>
+            <input id="initials" type="text" maxlength="2" placeholder="DW" />
+          </div>
+
+          <div class="form-group">
+            <label>Estado del Proyecto</label>
+            <input id="hiddenStatus" type="hidden" value="activo" />
+            <div class="status-grid" id="statusGrid">
+              <!-- SOLO los 10 estados permitidos -->
+              <div class="status-option status-activo selected" data-status="activo">Activo</div>
+
+              <div class="status-option status-community" data-status="community">Community</div>
+              <div class="status-option status-beta" data-status="beta">Beta</div>
+              <div class="status-option status-stable" data-status="stable">Stable</div>
+              <div class="status-option status-experimental" data-status="experimental">Experimental</div>
+              <div class="status-option status-premium" data-status="premium">Premium</div>
+              <div class="status-option status-free" data-status="free">Free</div>
+              <div class="status-option status-demo" data-status="demo">Demo</div>
+              <div class="status-option status-urgent" data-status="urgent">Urgent</div>
+              <div class="status-option status-archived" data-status="archived">Archived</div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;flex-direction:column;">
+            <button type="submit" class="submit-btn" id="submitBtn">Agregar Proyecto</button>
+            <div id="cooldownDisplay">Comprobando permiso para añadir...</div>
+          </div>
+        </form>
+
+        <!-- Right column: Preview + actions -->
+        <div>
+          <div class="preview-container" id="previewContainer">
+            <div class="preview-title">Vista Previa del Proyecto</div>
+            <div class="preview-card">
+              <div class="initials" id="previewInitials">--</div>
+              <h3 id="previewTitle">Título del proyecto</h3>
+              <div class="url" id="previewUrl">https://mi-proyecto.netlify.app</div>
+              <div class="description" id="previewDescription">Descripción del proyecto...</div>
+              <div class="tags" id="previewTags"><span class="tag">ejemplo</span></div>
+              <span class="status-badge status-oficial" id="previewStatus">activo</span>
+              <!-- Botón eliminar proyecto (solo visible si hay coincidencia en preview) -->
+              <button id="deleteProjectBtn"
+                style="display:none;margin-top:10px;background:linear-gradient(45deg,#ef4444,#dc2626);color:#fff;font-weight:700;padding:8px 18px;border:none;border-radius:8px;font-size:1rem;cursor:pointer;">Eliminar
+                Proyecto</button>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:8px;">
+            <a id="goDev" href="https://dev-center-community.netlify.app" target="_blank" rel="noopener"
+              class="submit-btn"
+              style="flex:1;text-align:center;background:linear-gradient(45deg,#667eea,#764ba2);box-shadow:0 8px 25px rgba(118,75,162,0.25);">Abrir
+              DevCenter</a>
+          </div>
+
+          <div id="message" class="message" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal editor (invisible hasta presionas 'q' minúscula) -->
+  <div id="jsonModal"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;z-index:9999;padding:20px;">
+    <div
+      style="max-width:1100px;width:100%;background:#0b0b0b;border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+        <h3 style="margin:0;color:#facc15;">Editor JSON (secreto)</h3>
+        <div style="margin-left:auto;color:#9ca3af;font-size:0.9rem;">Bin: <code id="binIdDisplay"
+            style="background:transparent;color:#60a5fa;">68af329cae596e708fd92637</code></div>
+      </div>
+      <textarea id="jsonEditor" spellcheck="false"
+        style="width:100%;height:420px;padding:12px;border-radius:8px;background:#050507;color:#e6eef8;border:1px solid rgba(255,255,255,0.04);font-family:monospace;font-size:13px;line-height:1.4;"></textarea>
+      <div style="display:flex;gap:10px;margin-top:12px;">
+        <button id="saveJsonBtn" class="submit-btn" style="flex:0 0 140px;">Guardar JSON</button>
+        <button id="closeJsonBtn" class="submit-btn"
+          style="flex:0 0 120px;background:linear-gradient(45deg,#ef4444,#dc2626);">Cancelar</button>
+        <div id="jsonModalMsg" style="margin-left:auto;align-self:center;color:#9ca3af;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cargar sistema de autenticación -->
+  <script src="../../api.js"></script>
+  
+  <script>
+    /* ===== CONFIG ===== */
+    const USE_JSONBIN = true; // Cambia a false para usar archivo local DevCenter.json
+    const BIN_ID = "68af329cae596e708fd92637";
+    const ACCESS_KEY = "$2a$10$IbCel6X/gSLaMz/uH3pPdeZbyKT6nzBvjc/U7Bi9ToIg8zWuqxIQy";
+    const LOCAL_JSON_PATH = "./Dev-Center-all/DevCenter.json";
+    
+    // CONFIG para URLs de Creator/ia-code
+    const IACODE_BIN_ID = "68e2e274ae596e708f075367";
+
+     // Cooldown de 5 días
+     const COOLDOWN_MS = 5 * 24 * 60 * 60 * 1000;
+    const LOCAL_KEY = 'dc_last_add_ts';
+    const OVERRIDE_KEY = 'dc_override_active'; // sessionStorage
+
+    /* ===== DOM ===== */
+    const form = document.getElementById('projectForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const messageBox = document.getElementById('message');
+    const cooldownDisplay = document.getElementById('cooldownDisplay');
+
+    const titleInput = document.getElementById('title');
+    const urlInput = document.getElementById('url');
+    const tagsInput = document.getElementById('tags');
+    const initialsInput = document.getElementById('initials');
+    const hiddenStatus = document.getElementById('hiddenStatus');
+
+    /* === description DOM (nuevo) === */
+    const descriptionInput = document.getElementById('description');
+    /* =============================== */
+
+    const previewContainer = document.getElementById('previewContainer');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewUrl = document.getElementById('previewUrl');
+    const previewTags = document.getElementById('previewTags');
+    const previewInitials = document.getElementById('previewInitials');
+    const previewStatus = document.getElementById('previewStatus');
+
+    /* === preview descripción (nuevo) === */
+    const previewDescription = document.getElementById('previewDescription');
+    /* =================================== */
+
+    const deleteProjectBtn = document.getElementById('deleteProjectBtn');
+
+    let statusOptions = Array.from(document.querySelectorAll('.status-option'));
+
+    /* JSON editor modal */
+    const jsonModal = document.getElementById('jsonModal');
+    const jsonEditor = document.getElementById('jsonEditor');
+    const saveJsonBtn = document.getElementById('saveJsonBtn');
+    const closeJsonBtn = document.getElementById('closeJsonBtn');
+    const jsonModalMsg = document.getElementById('jsonModalMsg');
+    document.getElementById('binIdDisplay').textContent = BIN_ID;
+
+    // Cargar códigos desde JSONBin al inicio
+    async function loadCodeData() {
+      try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${IACODE_BIN_ID}/latest`, {
+          cache: "no-cache"
+        });
+        if (response.ok) {
+          const data = await response.json();
+          // El bin tiene estructura: [{key, url}]
+          const arrayData = data.record || [];
+          const codeData = {};
+          arrayData.forEach(item => {
+            if (item.key && item.url) {
+              codeData[item.key] = item.url;
+            }
+          });
+          return codeData;
+        }
+      } catch (error) {
+        console.log('No se pudo cargar desde JSONBin:', error);
+      }
+      return {};
+    }
+
+    // Función para obtener código de la URL
+    function getCodeFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('code');
+    }
+
+    // Función para precargar URL basado en código
+    async function preloadURLFromCode() {
+      const code = getCodeFromURL();
+      if (code) {
+        const codeData = await loadCodeData();
+        if (codeData[code]) {
+          urlInput.value = codeData[code];
+          urlInput.disabled = true;
+          urlInput.style.backgroundColor = 'rgba(255, 255, 255, 0.02) !important';
+          urlInput.style.color = '#9ca3af !important';
+          urlInput.style.cursor = 'not-allowed !important';
+          urlInput.style.borderColor = 'rgba(255, 255, 255, 0.05) !important';
+          
+          // Agregar mensaje informativo
+          const infoElement = document.createElement('div');
+          infoElement.style.cssText = `
+            margin-top: 5px;
+            padding: 8px 12px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 6px;
+            color: #60a5fa;
+            font-size: 0.85rem;
+            font-weight: 500;
+          `;
+          infoElement.textContent = `✓ URL precargada automáticamente con código: ${code}`;
+          urlInput.parentNode.appendChild(infoElement);
+          
+          updatePreview();
+        }
+      }
+    }
+
+    // Sistema de pasos y bloqueo de navegación
+    function initStepSystemAndNavigation() {
+      // Guardar paso actual
+      localStorage.setItem('devcenter_step', '2');
+      
+      // Bloquear navegación hacia atrás
+      history.pushState(null, null, window.location.href);
+      window.addEventListener('popstate', function(event) {
+        history.pushState(null, null, window.location.href);
+      });
+      
+      // Mostrar contador de páginas web
+      updateWebsiteCountDisplay();
+    }
+
+    // Actualizar display del contador de websites
+    function updateWebsiteCountDisplay() {
+      const createdWebsites = JSON.parse(localStorage.getItem('created_websites') || '[]');
+      let limitElement = document.querySelector('.website-limit-devcenter');
+      
+      if (!limitElement) {
+        limitElement = document.createElement('div');
+        limitElement.className = 'website-limit-devcenter';
+        limitElement.style.cssText = `
+          position: fixed;
+          top: 10px;
+          left: 10px;
+          background: rgba(250, 204, 21, 0.1);
+          border: 1px solid rgba(250, 204, 21, 0.3);
+          padding: 10px 15px;
+          border-radius: 8px;
+          color: #facc15;
+          font-weight: bold;
+          z-index: 1000;
+          backdrop-filter: blur(5px);
+        `;
+        document.body.appendChild(limitElement);
+      }
+      
+      limitElement.textContent = `Páginas creadas: ${createdWebsites.length}/2`;
+      
+      if (createdWebsites.length >= 2) {
+        limitElement.style.background = 'rgba(239, 68, 68, 0.1)';
+        limitElement.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+        limitElement.style.color = '#f87171';
+      }
+    }
+
+    // Agregar website al contador (solo cuando se sube exitosamente)
+    function addWebsiteToCount(website) {
+      let createdWebsites = JSON.parse(localStorage.getItem('created_websites') || '[]');
+      
+      // Verificar límite antes de agregar
+      if (createdWebsites.length >= 2) {
+        console.log('Límite de 2 páginas alcanzado');
+        return false;
+      }
+      
+      createdWebsites.push(website);
+      localStorage.setItem('created_websites', JSON.stringify(createdWebsites));
+      
+      // Actualizar display inmediatamente
+      updateWebsiteCountDisplay();
+      
+      return true;
+    }
+
+    /* ===== UTIL ===== */
+    function showMessage(html, type = 'loading') {
+      messageBox.innerHTML = html;
+      messageBox.className = `message ${type} show`;
+      if (type !== 'loading') {
+        setTimeout(() => messageBox.classList.remove('show'), 5000);
+      }
+    }
+
+    function isValidHttpUrl(string) {
+      try { const u = new URL(string); return u.protocol === 'http:' || u.protocol === 'https:'; } catch { return false; }
+    }
+
+    function getLastLocalTs() { const v = localStorage.getItem(LOCAL_KEY); return v ? Number(v) : 0; }
+    function setLastLocalTs(ts = Date.now()) { localStorage.setItem(LOCAL_KEY, String(ts)); }
+    function clearLastLocalTs() { localStorage.removeItem(LOCAL_KEY); }
+
+    function isOverrideActive() { return sessionStorage.getItem(OVERRIDE_KEY) === '1'; }
+    function setOverrideActive() { sessionStorage.setItem(OVERRIDE_KEY, '1'); }
+
+    /* returns remaining ms or 0 */
+    function cooldownRemainingMs() {
+      const last = getLastLocalTs();
+      if (!last) return 0;
+      const elapsed = Date.now() - last;
+      const rem = COOLDOWN_MS - elapsed;
+      return rem > 0 ? rem : 0;
+    }
+    function formatRemaining(ms) {
+      if (ms <= 0) return '0s';
+      const s = Math.floor(ms / 1000);
+      const days = Math.floor(s / 86400);
+      const hours = Math.floor((s % 86400) / 3600);
+      const mins = Math.floor((s % 3600) / 60);
+      const sec = s % 60;
+      return (days ? days + 'd ' : '') + (hours ? hours + 'h ' : '') + (mins ? mins + 'm ' : '') + sec + 's';
+    }
+
+    /* updateCooldownUI ahora actualiza un elemento persistente (cooldownDisplay)
+       y habilita/deshabilita el botón de envío. */
+    function updateCooldownUI() {
+      const rem = cooldownRemainingMs();
+      if (rem > 0 && !isOverrideActive()) {
+        submitBtn.disabled = true;
+        cooldownDisplay.textContent = `Debes esperar ${formatRemaining(rem)} para agregar otro proyecto.`;
+      } else {
+        submitBtn.disabled = false;
+        cooldownDisplay.textContent = `Puedes crear tu página.`;
+      }
+    }
+
+    /* run updateCooldownUI every second for live countdown */
+    setInterval(updateCooldownUI, 1000);
+
+    /* ===== API ===== */
+    async function getBinRaw() {
+      if (USE_JSONBIN) {
+        const resp = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { cache: 'no-store' });
+        if (!resp.ok) throw new Error('GET failed: ' + resp.status);
+        return await resp.json();
+      } else {
+        const resp = await fetch(LOCAL_JSON_PATH + '?t=' + Date.now(), { cache: 'no-store' });
+        if (!resp.ok) throw new Error('GET local failed: ' + resp.status);
+        return await resp.json();
+      }
+    }
+    async function getProjects() {
+      const data = await getBinRaw();
+      return data.record?.projects || data.projects || [];
+    }
+    async function putBin(bodyObj) {
+      if (USE_JSONBIN) {
+        const resp = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Access-Key': ACCESS_KEY,
+            'X-Bin-Versioning': 'false'
+          },
+          body: JSON.stringify(bodyObj)
+        });
+        if (!resp.ok) {
+          const txt = await resp.text().catch(() => null);
+          throw new Error('PUT failed ' + resp.status + ' ' + (txt || ''));
+        }
+        return await resp.json();
+      } else {
+        // Guardar localmente no es posible desde el navegador por seguridad,
+        // pero puedes mostrar un mensaje o implementar lógica adicional si usas Node/Electron.
+        showMessage('Guardado local no soportado en navegador. Cambia a JSONBin para guardar.', 'error');
+        throw new Error('Guardado local no soportado');
+      }
+    }
+
+    /* ===== UI: preview & status selection ===== */
+    function refreshStatusOptions() {
+      statusOptions = Array.from(document.querySelectorAll('.status-option'));
+      statusOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+          statusOptions.forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          hiddenStatus.value = opt.dataset.status;
+          updatePreview();
+        });
+      });
+    }
+    refreshStatusOptions();
+
+    function updatePreview() {
+      const title = titleInput.value.trim() || 'Título del proyecto';
+      const url = urlInput.value.trim() || 'https://ejemplo.netlify.app';
+      const tags = tagsInput.value.trim();
+      const initials = (initialsInput.value.trim() || '--').slice(0, 2).toUpperCase();
+      const status = hiddenStatus.value || 'oficial';
+      /* === descripción en preview (nuevo) === */
+      const description = (descriptionInput.value.trim() || 'Descripción del proyecto...');
+      /* ===================================== */
+      previewTitle.textContent = title;
+      previewUrl.textContent = url;
+      previewInitials.textContent = initials;
+      previewTags.innerHTML = '';
+      const tagArray = tags.split(',').map(t => t.trim()).filter(Boolean);
+      if (tagArray.length === 0) {
+        const el = document.createElement('span'); el.className = 'tag'; el.textContent = 'Tags..'; previewTags.appendChild(el);
+      } else {
+        tagArray.forEach(t => { const el = document.createElement('span'); el.className = 'tag'; el.textContent = t; previewTags.appendChild(el); });
+      }
+      // handle status class for preview
+      previewStatus.className = `status-badge status-${status}`;
+      previewStatus.textContent = status.toUpperCase();
+
+      /* set preview description (nuevo) */
+      previewDescription.textContent = description;
+
+      if (title !== 'Título del proyecto' || url !== 'https://ejemplo.netlify.app' || description !== 'Descripción del proyecto...') previewContainer.classList.add('show'); else previewContainer.classList.remove('show');
+    }
+    titleInput.addEventListener('input', updatePreview);
+    urlInput.addEventListener('input', updatePreview);
+    tagsInput.addEventListener('input', updatePreview);
+    initialsInput.addEventListener('input', updatePreview);
+    /* === nuevo listener para description === */
+    descriptionInput.addEventListener('input', updatePreview);
+    /* ======================================= */
+
+    // Mostrar botón eliminar si el proyecto existe en el bin (por título y url)
+    async function updateDeleteBtnVisibility() {
+      const title = titleInput.value.trim();
+      const url = urlInput.value.trim();
+      if (!title || !url) {
+        deleteProjectBtn.style.display = 'none';
+        return;
+      }
+      try {
+        const raw = await getBinRaw();
+        const projects = raw.record?.projects || [];
+        const exists = projects.find(p => (p.title || '').toLowerCase() === title.toLowerCase() && (p.url || '').toLowerCase() === url.toLowerCase());
+        deleteProjectBtn.style.display = exists ? 'block' : 'none';
+      } catch {
+        deleteProjectBtn.style.display = 'none';
+      }
+    }
+    titleInput.addEventListener('input', updateDeleteBtnVisibility);
+    urlInput.addEventListener('input', updateDeleteBtnVisibility);
+
+    /* ========================= ELIMINAR PROYECTO ========================= */
+    deleteProjectBtn.addEventListener('click', async () => {
+      const title = titleInput.value.trim();
+      const url = urlInput.value.trim();
+      if (!title || !url) {
+        showMessage('Debes ingresar título y URL para eliminar.', 'error');
+        return;
+      }
+      if (!confirm('¿Seguro que quieres eliminar este proyecto?')) return;
+      try {
+        showMessage('Eliminando proyecto<span class="loading-dots"></span>', 'loading');
+        const raw = await getBinRaw();
+        const projects = raw.record?.projects || [];
+        const meta = raw.record?.meta || {};
+        const idx = projects.findIndex(p => (p.title || '').toLowerCase() === title.toLowerCase() && (p.url || '').toLowerCase() === url.toLowerCase());
+        if (idx === -1) {
+          showMessage('No se encontró el proyecto para eliminar.', 'error');
+          return;
+        }
+        projects.splice(idx, 1);
+        meta.projects_count = projects.length;
+        meta.updated = new Date().toISOString();
+        await putBin({ meta, projects });
+        showMessage('Proyecto eliminado con éxito ✅', 'success');
+        form.reset();
+        hiddenStatus.value = 'oficial';
+        statusOptions.forEach(o => o.classList.remove('selected'));
+        document.querySelector('.status-option.status-oficial')?.classList.add('selected');
+        previewContainer.classList.remove('show');
+        updateCooldownUI();
+        deleteProjectBtn.style.display = 'none';
+      } catch (err) {
+        showMessage('Error al eliminar proyecto: ' + (err.message || err), 'error');
+      }
+    });
+
+    /* ===== Form submit ===== */
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+
+      const rem = cooldownRemainingMs();
+      if (rem > 0 && !isOverrideActive()) {
+        showMessage(`Aún debes esperar ${formatRemaining(rem)} para agregar otro proyecto.`, 'error');
+        return;
+      }
+
+      const title = titleInput.value.trim();
+      const url = urlInput.value.trim();
+      const tags = tagsInput.value.split(',').map(t => t.trim()).filter(Boolean);
+      const initials = (initialsInput.value.trim() || '').slice(0, 2).toUpperCase() || title.slice(0, 2).toUpperCase();
+      const status = hiddenStatus.value || 'oficial';
+      const description = descriptionInput.value.trim() || '';
+
+      if (!title) { showMessage('El título es obligatorio.', 'error'); return; }
+
+      const netlifyRegex = /^https:\/\/[a-zA-Z0-9-]+\.netlify\.app$/;
+
+      if (!url || !isValidHttpUrl(url)) {
+        showMessage('Introduce una URL válida.', 'error');
+        return;
+      }
+      if (!netlifyRegex.test(url)) {
+        showMessage('La URL debe ser de Netlify en formato: https://nombre.netlify.app', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      showMessage('Actualizando proyecto<span class="loading-dots"></span>', 'loading');
+
+      try {
+        // Leer el JSON completo (meta + projects)
+        const raw = await getBinRaw();
+        const current = raw.record?.projects || [];
+        const meta = raw.record?.meta || {};
+
+        // evitar duplicados por titulo o url (insensible a mayus)
+        const exists = current.some(p => (p.title || '').toLowerCase() === title.toLowerCase() || (p.url || '').toLowerCase() === url.toLowerCase());
+        if (exists) {
+          showMessage('Ya existe un proyecto con ese título o URL.', 'error');
+          submitBtn.disabled = false;
+          return;
+        }
+
+        // Obtener información del usuario actual
+        const currentUser = window.auth?.getCurrentUser();
+        const owner = currentUser?.username || 'unknown';
+        const ownerName = currentUser?.username || 'Usuario';
+
+        const newProject = {
+          id: `proj-${Date.now()}`,
+          title,
+          url,
+          tags,
+          initials,
+          status,
+          description,
+          owner: owner,
+          ownerName: ownerName,
+          dateAdded: new Date().toISOString()
+        };
+
+        const updated = [...current, newProject];
+
+        // Actualizar meta.projects_count y meta.updated
+        meta.projects_count = updated.length;
+        meta.updated = new Date().toISOString();
+
+        // Guardar el bin completo
+        await putBin({
+          meta,
+          projects: updated
+        });
+
+        setLastLocalTs();
+
+        showMessage('¡Proyecto agregado con éxito! Redirigiendo a gestión de proyectos... ✅', 'success');
+        
+        // Agregar al contador de websites creados SOLO cuando se sube exitosamente
+        addWebsiteToCount({
+          type: 'proyecto',
+          title: title || 'Proyecto DevCenter',
+          timestamp: Date.now()
+        });
+        
+        // Guardar paso final y redirigir a la página de gestión de proyectos
+        localStorage.setItem('devcenter_step', '3');
+        setTimeout(() => {
+          window.location.href = '../../app/my-projects.html';
+        }, 2000);
+
+        form.reset();
+        hiddenStatus.value = 'oficial';
+        statusOptions.forEach(o => o.classList.remove('selected'));
+        document.querySelector('.status-option.status-oficial')?.classList.add('selected');
+        previewContainer.classList.remove('show');
+        updateCooldownUI();
+        deleteProjectBtn.style.display = 'none';
+      } catch (err) {
+        console.error('submit error', err);
+        showMessage('Error al agregar proyecto: ' + (err.message || err), 'error');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    // MODAL JSON EDITOR (presiona 'q' para abrir)
+    let jsonModalOpen = false;
+
+    function openJsonModal() {
+      if (jsonModalOpen) return;
+      jsonModalOpen = true;
+      loadJsonToEditor();
+      jsonModal.style.display = 'flex';
+      setTimeout(() => jsonEditor.focus(), 100);
+    }
+
+    function closeJsonModal() {
+      jsonModalOpen = false;
+      jsonModal.style.display = 'none';
+      jsonModalMsg.textContent = '';
+    }
+
+    async function loadJsonToEditor() {
+      jsonModalMsg.textContent = 'Cargando...';
+      try {
+        const raw = await getBinRaw();
+        jsonEditor.value = JSON.stringify(raw.record || raw, null, 2);
+        jsonModalMsg.textContent = `${raw.record?.projects?.length || 0} proyectos cargados`;
+      } catch (err) {
+        jsonEditor.value = '{\n  "meta": {\n    "projects_count": 0,\n    "updated": "' + new Date().toISOString() + '"\n  },\n  "projects": []\n}';
+        jsonModalMsg.textContent = 'Error al cargar: ' + (err.message || err);
+      }
+    }
+
+    async function saveJsonFromEditor() {
+      jsonModalMsg.textContent = 'Guardando...';
+      try {
+        const jsonText = jsonEditor.value.trim();
+        if (!jsonText) throw new Error('JSON vacío');
+        const parsed = JSON.parse(jsonText);
+        await putBin(parsed);
+        jsonModalMsg.textContent = '✅ Guardado exitoso';
+        setTimeout(() => jsonModalMsg.textContent = '', 3000);
+      } catch (err) {
+        jsonModalMsg.textContent = '❌ Error: ' + (err.message || err);
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'q' && !e.ctrlKey && !e.altKey && !e.shiftKey) {
+        if (!jsonModalOpen && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          openJsonModal();
+        }
+      }
+      if (e.key === 'Escape' && jsonModalOpen) {
+        closeJsonModal();
+      }
+    });
+
+    saveJsonBtn.addEventListener('click', saveJsonFromEditor);
+    closeJsonBtn.addEventListener('click', closeJsonModal);
+
+    /* ===== init ===== */
+    // Inicializar sistema de pasos y navegación (incluye restauración de estado)
+    initStepSystemAndNavigation();
+    
+    updatePreview();
+    updateCooldownUI();
+    updateDeleteBtnVisibility();
+    
+    // Precargar URL si hay código en la URL (carga automática mejorada)
+    preloadURLFromCode();
+
+  </script>
+</body>
+</html>

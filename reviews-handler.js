@@ -171,6 +171,52 @@ function addReviewStyles() {
       .submit-btn { padding: 9px 18px; font-size: 0.9rem; }
       .form-message { padding: 10px; font-size: 0.85rem; }
     }
+    
+    @media (prefers-color-scheme: light) {
+      .star-empty { color: rgba(0,0,0,0.4) !important; }
+      .rating-text { color: #000000 !important; font-weight: 700 !important; }
+      .reviews-section { border-top: 3px solid rgba(0,0,0,0.35) !important; }
+      .reviews-title { color: #000000 !important; font-weight: 800 !important; }
+      .review-item { background: rgba(0,0,0,0.08) !important; border: 3px solid rgba(0,0,0,0.4) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
+      .review-item:hover { background: rgba(0,0,0,0.12) !important; border-color: rgba(0,0,0,0.5) !important; box-shadow: 0 6px 16px rgba(0,0,0,0.2) !important; }
+      .review-user { color: #ea580c !important; font-weight: 800 !important; }
+      .review-date { color: rgba(0,0,0,0.75) !important; font-weight: 600 !important; }
+      .review-comment { color: #000000 !important; font-weight: 600 !important; line-height: 1.7 !important; }
+      .no-reviews { color: rgba(0,0,0,0.7) !important; font-weight: 600 !important; }
+      .review-form { background: rgba(0,0,0,0.08) !important; border: 3px solid rgba(0,0,0,0.4) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
+      .review-form h3 { color: #ea580c !important; font-weight: 800 !important; }
+      .form-group label { color: #000000 !important; font-weight: 700 !important; }
+      .form-group input, .form-group textarea { background: #ffffff !important; border: 3px solid rgba(0,0,0,0.45) !important; color: #000000 !important; font-weight: 600 !important; }
+      .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(0,0,0,0.6) !important; }
+      .form-group input:focus, .form-group textarea:focus { border-color: #ea580c !important; background: #ffffff !important; box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.2) !important; }
+      .star-button { color: rgba(0,0,0,0.4) !important; }
+      .star-button:hover, .star-button.selected { color: #ea580c !important; }
+      #ratingText { color: #000000 !important; font-weight: 700 !important; }
+      .form-message.success { background: rgba(34, 197, 94, 0.25) !important; color: #14532d !important; border: 3px solid rgba(34, 197, 94, 0.6) !important; font-weight: 700 !important; }
+      .form-message.error { background: rgba(239, 68, 68, 0.25) !important; color: #991b1b !important; border: 3px solid rgba(239, 68, 68, 0.6) !important; font-weight: 700 !important; }
+    }
+    
+    html.theme-light .star-empty { color: rgba(0,0,0,0.4) !important; }
+    html.theme-light .rating-text { color: #000000 !important; font-weight: 700 !important; }
+    html.theme-light .reviews-section { border-top: 3px solid rgba(0,0,0,0.35) !important; }
+    html.theme-light .reviews-title { color: #000000 !important; font-weight: 800 !important; }
+    html.theme-light .review-item { background: rgba(0,0,0,0.08) !important; border: 3px solid rgba(0,0,0,0.4) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
+    html.theme-light .review-item:hover { background: rgba(0,0,0,0.12) !important; border-color: rgba(0,0,0,0.5) !important; box-shadow: 0 6px 16px rgba(0,0,0,0.2) !important; }
+    html.theme-light .review-user { color: #ea580c !important; font-weight: 800 !important; }
+    html.theme-light .review-date { color: rgba(0,0,0,0.75) !important; font-weight: 600 !important; }
+    html.theme-light .review-comment { color: #000000 !important; font-weight: 600 !important; line-height: 1.7 !important; }
+    html.theme-light .no-reviews { color: rgba(0,0,0,0.7) !important; font-weight: 600 !important; }
+    html.theme-light .review-form { background: rgba(0,0,0,0.08) !important; border: 3px solid rgba(0,0,0,0.4) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
+    html.theme-light .review-form h3 { color: #ea580c !important; font-weight: 800 !important; }
+    html.theme-light .form-group label { color: #000000 !important; font-weight: 700 !important; }
+    html.theme-light .form-group input, html.theme-light .form-group textarea { background: #ffffff !important; border: 3px solid rgba(0,0,0,0.45) !important; color: #000000 !important; font-weight: 600 !important; }
+    html.theme-light .form-group input::placeholder, html.theme-light .form-group textarea::placeholder { color: rgba(0,0,0,0.6) !important; }
+    html.theme-light .form-group input:focus, html.theme-light .form-group textarea:focus { border-color: #ea580c !important; background: #ffffff !important; box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.2) !important; }
+    html.theme-light .star-button { color: rgba(0,0,0,0.4) !important; }
+    html.theme-light .star-button:hover, html.theme-light .star-button.selected { color: #ea580c !important; }
+    html.theme-light #ratingText { color: #000000 !important; font-weight: 700 !important; }
+    html.theme-light .form-message.success { background: rgba(34, 197, 94, 0.25) !important; color: #14532d !important; border: 3px solid rgba(34, 197, 94, 0.6) !important; font-weight: 700 !important; }
+    html.theme-light .form-message.error { background: rgba(239, 68, 68, 0.25) !important; color: #991b1b !important; border: 3px solid rgba(239, 68, 68, 0.6) !important; font-weight: 700 !important; }
   `;
   document.head.appendChild(style);
 }

@@ -605,6 +605,38 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
     badge.classList.add(statusClass);
     badge.textContent = (status || 'unknown').toUpperCase();
 
+    // Animación de bordes al hacer clic en el badge de status "oficial"
+    if (status === 'oficial') {
+      badge.style.cursor = 'pointer';
+      badge.onclick = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        // Aplicar animación solo a los bordes de la página
+        document.body.classList.remove('page-border-animation');
+        setTimeout(() => {
+          document.body.classList.add('page-border-animation');
+        }, 10);
+        setTimeout(() => {
+          document.body.classList.remove('page-border-animation');
+        }, 1500);
+        
+        // Si el creador es Justin, aplicar animación RGB super chida a su nombre
+        if (project.owner && project.owner.toLowerCase().includes('justin')) {
+          const ownerDiv = card.querySelector('.project-creator');
+          if (ownerDiv) {
+            ownerDiv.classList.remove('creator-rgb-animation');
+            setTimeout(() => {
+              ownerDiv.classList.add('creator-rgb-animation');
+            }, 10);
+            setTimeout(() => {
+              ownerDiv.classList.remove('creator-rgb-animation');
+            }, 2000);
+          }
+        }
+      };
+    }
+
     titleWrap.appendChild(h3);
     titleWrap.appendChild(badge);
 
@@ -632,9 +664,9 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
     // Mostrar información del owner en tarjetas promocionales
     if (project.owner) {
       const ownerDiv = document.createElement('div');
+      ownerDiv.className = 'project-creator';
       ownerDiv.style.marginTop = '8px';
       ownerDiv.style.fontSize = '0.9rem';
-      ownerDiv.style.color = 'rgba(255, 255, 255, 0.7)';
       ownerDiv.innerHTML = '<strong>Creador:</strong> ' + project.owner;
       titleWrap.appendChild(ownerDiv);
     }
@@ -1018,6 +1050,38 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
     badge.classList.add(statusClass);
     badge.textContent = (status || 'unknown').toUpperCase();
 
+    // Animación de bordes al hacer clic en el badge de status "oficial"
+    if (status === 'oficial') {
+      badge.style.cursor = 'pointer';
+      badge.onclick = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        // Aplicar animación solo a los bordes de la página
+        document.body.classList.remove('page-border-animation');
+        setTimeout(() => {
+          document.body.classList.add('page-border-animation');
+        }, 10);
+        setTimeout(() => {
+          document.body.classList.remove('page-border-animation');
+        }, 1500);
+        
+        // Si el creador es Justin, aplicar animación RGB super chida a su nombre
+        if (project.owner && project.owner.toLowerCase().includes('justin')) {
+          const ownerDiv = card.querySelector('.project-creator');
+          if (ownerDiv) {
+            ownerDiv.classList.remove('creator-rgb-animation');
+            setTimeout(() => {
+              ownerDiv.classList.add('creator-rgb-animation');
+            }, 10);
+            setTimeout(() => {
+              ownerDiv.classList.remove('creator-rgb-animation');
+            }, 2000);
+          }
+        }
+      };
+    }
+
     titleWrap.appendChild(h3);
     titleWrap.appendChild(badge);
 
@@ -1045,9 +1109,9 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
     // Mostrar información del owner
     if (project.owner) {
       const ownerDiv = document.createElement('div');
+      ownerDiv.className = 'project-creator';
       ownerDiv.style.marginTop = '8px';
       ownerDiv.style.fontSize = '0.9rem';
-      ownerDiv.style.color = 'rgba(255, 255, 255, 0.7)';
       ownerDiv.innerHTML = '<strong>Creador:</strong> ' + project.owner;
       titleWrap.appendChild(ownerDiv);
     }
@@ -1103,7 +1167,6 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
       return;
     } else {
       emptyState.style.display = 'none';
-      paginationControls.style.display = 'flex';
     }
     pageProjects.forEach((p, i) => {
       const card = createCard(p);
@@ -1187,6 +1250,285 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
     }
   }
 
+  // Función para abrir el gestor de DevCenter
+  async function openDevCenterManager(initialKey = '') {
+    const IACODE_BIN_ID = "68e2e274ae596e708f075367";
+    
+    // Crear modal
+    const modal = document.createElement('div');
+    modal.id = 'devCenterModal';
+    modal.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    `;
+    
+    modal.innerHTML = `
+      <div style="
+        max-width: 800px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border-radius: 16px;
+        padding: 30px;
+        border: 1px solid rgba(250, 204, 21, 0.3);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        scrollbar-width: thin;
+        scrollbar-color: rgba(250, 204, 21, 0.5) rgba(0, 0, 0, 0.3);
+      ">
+        <h2 style="color: #facc15; margin: 0 0 20px 0; font-size: 1.8rem; text-align: center;">
+          🔧 DevCenter Manager
+        </h2>
+        
+        <div style="background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+          <h3 style="color: #fff; margin: 0 0 15px 0; font-size: 1.1rem;">Agregar Nueva URL</h3>
+          
+          <input type="text" id="dcKeyInput" placeholder="Clave (ej: proyecto1)" 
+            value="${initialKey}"
+            style="
+              width: 100%;
+              padding: 12px;
+              margin-bottom: 10px;
+              background: rgba(255, 255, 255, 0.1);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              border-radius: 8px;
+              color: #fff;
+              font-size: 1rem;
+            "/>
+          
+          <input type="text" id="dcUrlInput" placeholder="URL (ej: https://ejemplo.com)" 
+            style="
+              width: 100%;
+              padding: 12px;
+              margin-bottom: 15px;
+              background: rgba(255, 255, 255, 0.1);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              border-radius: 8px;
+              color: #fff;
+              font-size: 1rem;
+            "/>
+          
+          <button id="dcAddBtn" style="
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+          ">Agregar URL</button>
+        </div>
+        
+        <div style="background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 12px; margin-bottom: 20px; max-height: 300px; overflow-y: auto;">
+          <h3 style="color: #fff; margin: 0 0 15px 0; font-size: 1.1rem;">URLs Existentes</h3>
+          <div id="dcUrlList" style="color: #cbd5e1;"></div>
+        </div>
+        
+        <div style="display: flex; gap: 10px;">
+          <button id="dcCloseBtn" style="
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+          ">Cerrar</button>
+        </div>
+        
+        <div id="dcMessage" style="
+          margin-top: 15px;
+          padding: 12px;
+          border-radius: 8px;
+          text-align: center;
+          font-weight: 600;
+          display: none;
+        "></div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Funciones del modal
+    const keyInput = modal.querySelector('#dcKeyInput');
+    const urlInput = modal.querySelector('#dcUrlInput');
+    const addBtn = modal.querySelector('#dcAddBtn');
+    const closeBtn = modal.querySelector('#dcCloseBtn');
+    const urlList = modal.querySelector('#dcUrlList');
+    const messageBox = modal.querySelector('#dcMessage');
+    
+    let currentData = {};
+    
+    // Cargar datos actuales
+    async function loadData() {
+      try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${IACODE_BIN_ID}/latest`, {
+          cache: "no-cache"
+        });
+        if (response.ok) {
+          const data = await response.json();
+          // Convertir array [{key, url}] a objeto {key: url}
+          const arrayData = data.record || [];
+          currentData = {};
+          arrayData.forEach(item => {
+            if (item.key && item.url) {
+              currentData[item.key] = item.url;
+            }
+          });
+          renderUrlList();
+        } else {
+          showMessage('Error al cargar datos de la API', 'error');
+        }
+      } catch (error) {
+        showMessage('Error al cargar datos', 'error');
+      }
+    }
+    
+    // Renderizar lista de URLs
+    function renderUrlList() {
+      if (Object.keys(currentData).length === 0) {
+        urlList.innerHTML = '<p style="color: #64748b; text-align: center;">No hay URLs guardadas</p>';
+        return;
+      }
+      
+      urlList.innerHTML = Object.entries(currentData).map(([key, url]) => `
+        <div style="
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 8px;
+          margin-bottom: 8px;
+        ">
+          <div style="flex: 1;">
+            <strong style="color: #facc15;">${key}:</strong>
+            <a href="${url}" target="_blank" style="color: #60a5fa; margin-left: 8px; word-break: break-all;">${url}</a>
+          </div>
+          <button class="dc-delete-btn" data-key="${key}" style="
+            padding: 6px 12px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 6px;
+            color: #f87171;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+          ">Eliminar</button>
+        </div>
+      `).join('');
+      
+      // Agregar eventos a botones de eliminar
+      modal.querySelectorAll('.dc-delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteUrl(btn.dataset.key));
+      });
+    }
+    
+    // Mostrar mensaje
+    function showMessage(text, type = 'success') {
+      messageBox.textContent = text;
+      messageBox.style.display = 'block';
+      messageBox.style.background = type === 'success' 
+        ? 'linear-gradient(45deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.2))'
+        : 'linear-gradient(45deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2))';
+      messageBox.style.color = type === 'success' ? '#4ade80' : '#f87171';
+      messageBox.style.border = type === 'success' 
+        ? '1px solid rgba(34, 197, 94, 0.3)'
+        : '1px solid rgba(239, 68, 68, 0.3)';
+      
+      setTimeout(() => {
+        messageBox.style.display = 'none';
+      }, 3000);
+    }
+    
+    // Agregar URL
+    async function addUrl() {
+      const key = keyInput.value.trim();
+      const url = urlInput.value.trim();
+      
+      if (!key || !url) {
+        showMessage('Por favor completa ambos campos', 'error');
+        return;
+      }
+      
+      currentData[key] = url;
+      
+      // Convertir objeto {key: url} a array [{key, url}]
+      const arrayData = Object.entries(currentData).map(([key, url]) => ({ key, url }));
+      
+      try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${IACODE_BIN_ID}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(arrayData)
+        });
+        
+        if (response.ok) {
+          showMessage(`URL agregada: ${key}`, 'success');
+          keyInput.value = '';
+          urlInput.value = '';
+          renderUrlList();
+        } else {
+          showMessage('Error al guardar', 'error');
+        }
+      } catch (error) {
+        showMessage('Error de conexión', 'error');
+      }
+    }
+    
+    // Eliminar URL
+    async function deleteUrl(key) {
+      if (!confirm(`¿Eliminar la clave "${key}"?`)) return;
+      
+      delete currentData[key];
+      
+      // Convertir objeto {key: url} a array [{key, url}]
+      const arrayData = Object.entries(currentData).map(([key, url]) => ({ key, url }));
+      
+      try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${IACODE_BIN_ID}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(arrayData)
+        });
+        
+        if (response.ok) {
+          showMessage(`URL eliminada: ${key}`, 'success');
+          renderUrlList();
+        } else {
+          showMessage('Error al eliminar', 'error');
+        }
+      } catch (error) {
+        showMessage('Error de conexión', 'error');
+      }
+    }
+    
+    // Eventos
+    addBtn.addEventListener('click', addUrl);
+    closeBtn.addEventListener('click', () => {
+      document.body.removeChild(modal);
+      if (searchBox) searchBox.value = '';
+    });
+    
+    // Cargar datos iniciales
+    await loadData();
+  }
+
   // SearchBox
   if (searchBox) {
     // Debounce para evitar búsquedas excesivas
@@ -1194,6 +1536,13 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
     searchBox.addEventListener('input', (e) => {
       clearTimeout(searchTimeout);
       const value = e.target.value;
+      
+      // Detectar comando especial DevCenter=key (debe ser exactamente este texto)
+      if (value === 'DevCenter=key') {
+        openDevCenterManager('');
+        return;
+      }
+      
       searchTimeout = setTimeout(() => applySearchFilter(value), 120);
     });
   }
