@@ -10,7 +10,7 @@ const REVIEWS_BIN_ID = window.BIN_CONFIG?.REVIEWS_BIN_ID || '68d839ed43b1c97be95
 const POPULARITY_SORT_ENABLED = true; // Por defecto habilitado
 const POP_MIN_VOTES = 5; // Mínimo de votos para el cálculo bayesiano (reducido para dar chance a proyectos nuevos)
 const POP_REVIEW_BONUS_K = 0.15; // Factor de bonificación por número de reseñas (aumentado)
-const POP_FALLBACK_MEAN = 3.5; // Promedio por defecto si no hay reseñas globales
+const POP_FALLBACK_MEAN = 3.0; // Promedio por defecto si no hay reseñas globales
 const POP_QUALITY_BONUS = 0.08; // Bonificación por reseñas con comentarios
 const POP_CONSISTENCY_PENALTY = 0.12; // Penalización por variación extrema en ratings
 
@@ -1573,8 +1573,9 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
       
       setCachedData('projects_cache', allProjects, 'projects');
     }
-    
-    console.log(`✅ Total de proyectos cargados: ${allProjects.length}`);
+    console.log('=================================');
+    console.log(`[✅] Total de proyectos cargados: ${allProjects.length}`);
+    console.log('=================================');
     
     // Construir cache de popularidad después de cargar proyectos y reseñas
     buildPopularityCache();
