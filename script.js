@@ -1573,9 +1573,9 @@ window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
       
       setCachedData('projects_cache', allProjects, 'projects');
     }
-    console.log('=================================');
+    console.log('=========================================================');
     console.log(`[✅] Total de proyectos cargados: ${allProjects.length}`);
-    console.log('=================================');
+    console.log('=========================================================');
     
     // Construir cache de popularidad después de cargar proyectos y reseñas
     buildPopularityCache();
