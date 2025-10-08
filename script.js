@@ -19,8 +19,8 @@ const ENABLE_PROMOTED_SECTION = true; // Cambiar a false para desactivar
 let promo = "PROMOCIÓN"; // Cambiar el texto de la promocion 
 // Solo nombres de proyectos que ya existen en JSONBin
 const PROMOTED_PROJECT_NAMES = [
-  "DevCenter IA",
-  "QR Generator"
+  "1DevCenter IA1",
+  "1QR Generator1"
 ];
 // ==================== CONFIGURACIÓN ====================
 window.REVIEWS_BIN_ID = REVIEWS_BIN_ID;
