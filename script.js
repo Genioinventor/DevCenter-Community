@@ -12,7 +12,7 @@ const POP_MIN_VOTES = 5; // Mínimo de votos para el cálculo bayesiano (reducid
 const POP_REVIEW_BONUS_K = 0.15; // Factor de bonificación por número de reseñas (aumentado)
 const POP_FALLBACK_MEAN = 3.0; // Promedio por defecto si no hay reseñas globales
 const POP_QUALITY_BONUS = 0.08; // Bonificación por reseñas con comentarios
-const POP_CONSISTENCY_PENALTY = 0.12; // Penalización por variación extrema en ratings
+const POP_CONSISTENCY_PENALTY = 0.1; // Penalización por variación extrema en ratings
 
 // ==================== PROYECTOS PROMOCIONALES ====================
 const ENABLE_PROMOTED_SECTION = true; // Cambiar a false para desactivar

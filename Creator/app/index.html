@@ -1128,10 +1128,18 @@
         }
       }
 
+      /* ===== Mostrar botón de gestionar proyectos ===== */
+      function showMyProjectsButton() {
+        const myProjectsBtn = document.getElementById('myProjectsBtn');
+        if (myProjectsBtn) {
+          myProjectsBtn.style.display = 'block';
+        }
+      }
+
       /* ===== init ===== */
       updatePreview();
       updateCooldownUI();
-      checkUserProjects();
+      showMyProjectsButton();
 
         </script>
       </body>

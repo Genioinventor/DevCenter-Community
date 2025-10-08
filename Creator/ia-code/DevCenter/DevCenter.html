@@ -1175,12 +1175,6 @@
     }
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'q' && !e.ctrlKey && !e.altKey && !e.shiftKey) {
-        if (!jsonModalOpen && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-          e.preventDefault();
-          openJsonModal();
-        }
-      }
       if (e.key === 'Escape' && jsonModalOpen) {
         closeJsonModal();
       }
@@ -1195,7 +1189,6 @@
     
     updatePreview();
     updateCooldownUI();
-    updateDeleteBtnVisibility();
     
     // Precargar URL si hay código en la URL (carga automática mejorada)
     preloadURLFromCode();
