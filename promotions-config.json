@@ -1,15 +1,13 @@
 {
   "promotions": [
     {
-      
       "projectName": "1DevCenter Code",
       "promoLabel": "Nuevo",
       "startDate": "2025-09-29",
-      "endDate": "2025-10-3",
+      "endDate": "2025-10-03",
       "dailyViewLimit": 100,
       "priority": 1,
       "active": false
-    }
     }
   ]
 }
